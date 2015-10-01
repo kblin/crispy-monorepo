@@ -54,6 +54,10 @@ body {
     border-top: 1px solid #900;
 }
 
+.input-tab {
+    padding-top: 2em;
+}
+
 .svgene-type-other {
     fill: gray;
     stroke: black;
