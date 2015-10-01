@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" ng-app="crispy">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>CRISPy web</title>
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="index.html">CRISPy web</a>
+      </div>
+    </div>
+  </nav>
+
+  <ng-view></ng-view>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="dtu-logo col-sm-2">
+        <img src="images/dtu_logo.svg">
+      </div>
+      <div class="footer-text col-sm-8">
+        Please cite bla bla bla
+      </div>
+      <div class="cfb-logo col-sm-2">
+        <img src="images/cfb_logo.svg" height="60px">
+      </div>
+    </div>
+  </footer>
+
+  <script src="components/jquery/dist/jquery.min.js"></script>
+  <script src="components/angular/angular.min.js"></script>
+  <script src="components/angular-route/angular-route.min.js"></script>
+  <script src="components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+  <script src="app.js"></script>
+  <script src="input/input.js"></script>
+  <script src="overview/overview.js"></script>
+  <script type="text/javascript">
+$(document).ready(function () {
+});
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,94 @@
+html {
+    min-height: 100%;
+    position: relative;
+}
+
+body {
+    margin-bottom: 160px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    heigth: 160px;
+    background-color: #303030;
+}
+
+.footer .text-muted {
+    color: #900;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+.clusters-table tbody tr {
+    cursor: pointer;
+    cursor: hand;
+}
+/*
+.clusters-table tbody tr:hover {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABmJLR0QAAAAAAAD5Q7t/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wkSCzc1El1yyQAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAANSURBVAjXY/j165cTAAkRAzFNlC/xAAAAAElFTkSuQmCC);
+}
+*/
+.crispr-details {
+    margin-top: 1em;
+    padding-top: 1em;
+    border-top: 1px solid #900;
+}
+
+.svgene-type-other {
+    fill: gray;
+    stroke: black;
+}
+.svgene-type-biosynthetic {
+    fill: #900;
+    stroke: black;
+}
+
+.svgene-type-transport {
+  fill: cornflowerblue;
+  stroke: black;
+}
+
+.svgene-type-regulatory {
+  fill: seagreen;
+  stroke: black;
+}
+
+.svgene-line {
+    stroke-width: 1px;
+    stroke: #888;
+}
+.svgene-locustag {
+    fill: #900;
+    display: none;
+}
+.svgene-clusterlabel {
+    fill: #900;
+}
+.svgene-tooltip {
+    border: 1px solid slategray;
+    background-color: #303030;
+    display: none;
+    position: absolute;
+    font-size: 80%;
+    padding: 0.5em;
+}

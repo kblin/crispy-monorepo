@@ -1,0 +1,67 @@
+<div ng-controller="OverviewController">
+<div class="container organism-info">
+  <div class="well well-lg">
+    Loaded:<br>
+    <em>Streptomyces coelicolor A3(2)</em>
+  </div>
+</div>
+
+<div class="container">
+  <form class="form-horizontal">
+    <div class="form-group">
+      <label for="target" class="control-label col-sm-2">Select target</label>
+      <div class="input-group col-sm-8">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" popover="{{targetTooltip}} bla" popover-placement="left"
+                  popover-append-to-body>
+            <i class="fa fa-info"></i>&nbsp;
+          </button>
+        </span>
+        <input type="text" class="form-control" id="target" placeholder="Range, locus tag or cluster number">
+        <span class="input-group-btn">
+          <a class="btn btn-primary" href="/output.html"><i class="fa fa-search"></i> Find targets</a>
+        </span>
+      </div>
+    </div>
+    <div class="form-group">
+    </div>
+  </form>
+</div>
+
+<div class="container clusters-table">
+  <table class="table table-striped table-hover">
+    <thead>
+    <tr>
+      <th class="text-right">From</th>
+      <th class="text-right">To</th>
+      <th>Cluster #</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td class="text-right">86637</td>
+      <td class="text-right">139654</td>
+      <td>Cluster 1</td>
+      <td>Otherks-T1pks</td>
+      <td>Leinamycin_biosynthetic_gene_cluster (2% of genes show similarity)</td>
+    </tr>
+    <tr id="cluster-2">
+      <td class="text-right">166501</td>
+      <td class="text-right">192038</td>
+      <td>Cluster 2</td>
+      <td>Terpene</td>
+      <td>Isorenieratene_biosynthetic_gene_cluster (100% of genes show similarity)</td>
+    </tr>
+    <tr id="cluster-3">
+      <td class="text-right">235986</td>
+      <td class="text-right">271084</td>
+      <td>Cluster 3</td>
+      <td>Lantipeptide</td>
+      <td>Sanglifehrin_A_biosynthetic_gene_cluster (4% of genes show similarity)</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</div>
