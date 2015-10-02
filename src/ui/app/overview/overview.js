@@ -14,15 +14,20 @@ app.factory('Genome', ['$resource', function($resource) {
 app.controller('OverviewController', ['$scope', '$stateParams', '$timeout', 'Genome',
   function($scope, $stateParams, $timeout, Genome) {
 
-    var genome = Genome.get({id: $stateParams.id}, getGenome);
+    var vm = this;
 
     $scope.targetTooltip = "You can select the target to predict CRISPR sequences for " +
         "by either specifying a range (1234-5678), a locus tag (SCO4711), " +
         "or an antiSMASH-predicted gene cluster (cluster 3)";
 
 
-    this.target = "";
-    this.selectTarget = selectTarget;
+    vm.target = "";
+    vm.selectTarget = selectTarget;
+    vm.session = {state: 'pending'};
+    vm.typeahead = [];
+    vm.cluster_names = [];
+    vm.orf_names = [];
+    var genome = Genome.get({id: $stateParams.id}, getGenome);
 
 
     var stop = undefined;
@@ -31,6 +36,22 @@ app.controller('OverviewController', ['$scope', '$stateParams', '$timeout', 'Gen
         this.target = name;
     };
 
+    function getClusterNames(genome) {
+        var clusters = [];
+        for (var i in genome.clusters) {
+            clusters.push(genome.clusters[i].name);
+        };
+        return clusters;
+    }
+
+    function getOrfNames(genome) {
+        var orfs = [];
+        for (var i in genome.orfs) {
+            orfs.push(genome.orfs[i].id);
+        };
+        return orfs;
+    }
+
     function getGenome() {
         console.log(genome);
 
@@ -38,9 +59,15 @@ app.controller('OverviewController', ['$scope', '$stateParams', '$timeout', 'Gen
             genome = Genome.get({id: $stateParams.id}, getGenome)
         };
 
-        if (genome.status == 'pending') {
+        if (genome.state == 'pending') {
             stop = $timeout(update, 50000);
             return;
+        }
+        if (genome.state == 'loaded') {
+            vm.session = genome;
+            vm.cluster_names = getClusterNames(genome.genome);
+            vm.orf_names = getOrfNames(genome.genome);
+            vm.typeahead = vm.cluster_names.concat(vm.orf_names);
         }
     }
 

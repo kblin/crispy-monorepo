@@ -19,8 +19,8 @@ app.config(function($stateProvider, $urlRouterProvider) {
             controller: 'InputController',
         })
         .state('overview', {
-            url: '/overview',
-            params: {uri: null, id: null},
+            url: '/overview/:id',
+            params: {uri: null},
             templateUrl: 'overview/overview.html',
             controller: 'OverviewController',
         });

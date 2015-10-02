@@ -1,8 +1,8 @@
 <div ng-controller="OverviewController as overview">
 <div class="container organism-info">
   <div class="well well-lg">
-    Loaded:<br>
-    <em>Streptomyces coelicolor A3(2)</em>
+    {{overview.session.state}}:<br>
+    <em>{{overview.session.genome.organism}}</em>
   </div>
 </div>
 
@@ -17,7 +17,8 @@
             <i class="fa fa-info"></i>&nbsp;
           </button>
         </span>
-        <input type="text" class="form-control" id="target" placeholder="Range, locus tag or cluster number" ng-model="overview.target" required>
+        <input type="text" class="form-control" id="target" placeholder="Range, locus tag or cluster number" ng-model="overview.target"
+               typeahead="name for name in overview.typeahead | filter:$viewValue | limitTo:8" required>
         <span class="input-group-btn">
           <button class="btn btn-primary" ng-disabled="targetForm.$invalid">
             <i class="fa fa-search"></i> Find targets
@@ -42,7 +43,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="cluster in overview.clusters" ng-click="overview.selectTarget(cluster.name)">
+    <tr ng-repeat="cluster in overview.session.genome.clusters" ng-click="overview.selectTarget(cluster.name)">
       <td class="text-right">{{cluster.start}}</td>
       <td class="text-right">{{cluster.end}}</td>
       <td>{{cluster.name}}</td>
