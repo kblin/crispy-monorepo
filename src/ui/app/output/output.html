@@ -1,0 +1,43 @@
+<div class="container" ng-controller="OutputController as output">
+  <div ng-show="output.session.state == 'scanning'">Please wait, {{output.session.state}}. <img src="/images/loading.gif" /></div>
+  <div ng-show="output.session.state == 'done'">
+    <h4>Region: {{output.session.name}} ({{output.session.from}} - {{output.session.to}})</h4>
+    <div id="cluster"></div>
+  </div>
+  <div ng-show="output.session.state == 'done'">
+    <table class="table table-striped table-hover">
+      <thead>
+      <tr>
+        <th class="text-right">Start</th>
+        <th class="text-right">End</th>
+        <th class="text-right">Strand</th>
+        <th>Sequence</th>
+        <th>PAM</th>
+        <th>2bp mismatches</th>
+        <th>3bp mismatches</th>
+        <th>Download</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="rna in output.displayed_grnas">
+        <td class="text-right">{{rna.start}}</td>
+        <td class="text-right">{{rna.end}}</td>
+        <td class="text-right">{{rna.strand}}</td>
+        <td style="font-family:monospace">{{rna.sequence}}</td>
+        <td style="font-family:monospace">{{rna.pam}}</td>
+        <td>{{rna['2bpmm']}}</td>
+        <td>{{rna['3bpmm']}}</td>
+        <td ng-click="forDownload(rna.id)">
+          <span ng-show="output.selected_grnas[rna.id]">
+            <i class="fa fa-trash"></i>
+          </span>
+          <span ng-hide="output.selected_grnas[rna.id]">
+            <i class="fa fa-shopping-cart"></i>
+          </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+</div>
+
+</div>
