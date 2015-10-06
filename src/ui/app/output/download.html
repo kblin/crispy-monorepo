@@ -1,0 +1,34 @@
+<div class="container row">
+  <div class="col-sm-3 col-sm-offset9">
+    <button class="btn btn-primary" ng-click="dl.download()"><i class="fa fa-download"></i> Download CSV file</button>
+  </div>
+</div>
+<div class="spacer" style="margin-top: 1em; margin-bottom: 1em;"></div>
+<div class="container">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th class="text-right">Start</th>
+      <th class="text-right">End</th>
+      <th class="text-right">Strand</th>
+      <th>Sequence</th>
+      <th>PAM</th>
+      <th>2bp mismatches</th>
+      <th>3bp mismatches</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="rna in dl.cart.getIds()">
+      <td>{{rna.id}}</td>
+      <td class="text-right">{{rna.start}}</td>
+      <td class="text-right">{{rna.end}}</td>
+      <td class="text-right">{{rna.strand}}</td>
+      <td style="font-family:monospace">{{rna.sequence}}</td>
+      <td style="font-family:monospace">{{rna.pam}}</td>
+      <td>{{rna['2bpmm']}}</td>
+      <td>{{rna['3bpmm']}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

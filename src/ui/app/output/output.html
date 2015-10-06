@@ -28,10 +28,10 @@
         <td>{{rna['2bpmm']}}</td>
         <td>{{rna['3bpmm']}}</td>
         <td ng-click="forDownload(rna.id)">
-          <span ng-show="output.selected_grnas[rna.id]">
+          <span ng-show="output.cart.has(rna.id)">
             <i class="fa fa-trash"></i>
           </span>
-          <span ng-hide="output.selected_grnas[rna.id]">
+          <span ng-hide="output.cart.has(rna.id)">
             <i class="fa fa-shopping-cart"></i>
           </span>
         </td>

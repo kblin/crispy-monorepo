@@ -58,6 +58,15 @@ body {
     padding-top: 2em;
 }
 
+.svgene-tick {
+    fill: #900;
+    stroke: #900;
+}
+.svgene-tick.active {
+    fill: #a00;
+    stroke: #900;
+}
+
 .svgene-type-other {
     fill: gray;
     stroke: black;

@@ -58,9 +58,7 @@ svgene.drawOrderedClusterOrfs = function(cluster, chart, all_orfs, ticks, scale,
     .attr("y", function(d) { var offset = 0; if (d.strand == -1) { offset = height * 0.8; }; return (single_cluster_height * i) + svgene.label_height + offset; })
     .attr("height", 10)
     .attr("width", 5)
-    .attr("class", "svgene-tick")
-    .attr("ng-mouseover", function (d) { return "tickHover(" + d.id + ")"; })
-    .attr("ng-class", function(d) { return "{active: active_tick == " + d.id + "}"; });
+    .attr("class", "svgene-tick");
   chart.selectAll("text")
     .data(all_orfs)
   .enter().append("text")
@@ -130,7 +128,8 @@ svgene.drawClusters = function(id, clusters, height, width) {
       .enter().append("div")
         .attr("class", "svgene-tooltip")
         .attr("id", function(d) { return idx + "-cluster" + cluster.idx + "-" + svgene.tag_to_id(d.id) + "-tooltip"; })
-        .html(function(d) { return d.description});
+        .html(function(d) { return '<h5>'+d.id+'</h5><a class="svgene-rescan" href="' + window.location.hash + '" id="' + svgene.tag_to_id(d.id) +
+            '-rescan" data-from="' + d.start + '" data-to="' + d.end +'">Show results for this gene only</a>'});
   }
   for (i=0; i < clusters.length; i++) {
       var cluster = clusters[i];
@@ -181,6 +180,27 @@ svgene.tooltip_handler = function(ev) {
     }
 };
 
+
+svgene.rescan = function(ev) {
+    var from = $(this).attr('data-from');
+    var to = $(this).attr('data-to');
+    var id = window.location.hash.split('/').pop();
+    var uri = '/api/v1.0/genome/' + id;
+    $.ajax({
+        url: uri,
+        method: 'POST',
+        contentType: 'application/json',
+        data: '{"from": ' + from + ', "to":' + to +'}',
+        success: function(data) {
+            var uri_components = window.location.hash.split('/');
+            uri_components.pop();
+            var new_uri = uri_components.join('/');
+            window.open(new_uri + '/' + data.id, '_self');
+        },
+        dataType: 'json',
+    });
+};
+
 svgene.init = function() {
     $(".svgene-orf").mouseover(function(e) {
         var id = $(this).attr("id").replace("-orf", "-label");
@@ -189,5 +209,5 @@ svgene.init = function() {
         var id = $(this).attr("id").replace("-orf", "-label");
         $("#"+id).hide();
     }).click(svgene.tooltip_handler);
-
+    $(".svgene-rescan").click(svgene.rescan);
 };

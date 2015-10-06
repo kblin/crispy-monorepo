@@ -17,10 +17,11 @@
       <div class="navbar-header">
         <a class="navbar-brand" href="#/input">CRISPy web</a>
       </div>
+      <form class="navbar-form navbar-right" ui-view="shopping"></form>
     </div>
   </nav>
 
-  <div ui-view></div>
+  <div ui-view='main'></div>
 
   <footer class="footer">
     <div class="container">
@@ -28,7 +29,7 @@
         <img src="images/dtu_logo.svg">
       </div>
       <div class="footer-text col-sm-8">
-        Please cite bla bla bla
+        Please Blin et al. (in preparation)
       </div>
       <div class="cfb-logo col-sm-2">
         <img src="images/cfb_logo.svg" height="60px">
@@ -42,9 +43,12 @@
   <script src="components/angular-ui-router/release/angular-ui-router.min.js"></script>
   <script src="components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
   <script src="components/ng-file-upload/ng-file-upload.min.js"></script>
+  <script src="components/d3/d3.min.js"></script>
+  <script src="svgene.js"></script>
   <script src="app.js"></script>
   <script src="input/input.js"></script>
   <script src="overview/overview.js"></script>
+  <script src="output/output.js"></script>
   <script type="text/javascript">
 $(document).ready(function () {
 });

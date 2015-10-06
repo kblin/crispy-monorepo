@@ -11,8 +11,8 @@ app.factory('Genome', ['$resource', function($resource) {
     return $resource('/api/v1.0/genome/:id', {id: '@id'});
 }]);
 
-app.controller('OverviewController', ['$scope', '$stateParams', '$timeout', 'Genome',
-  function($scope, $stateParams, $timeout, Genome) {
+app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$timeout', '$http', 'Genome',
+  function($scope, $state, $stateParams, $timeout, $http, Genome) {
 
     var vm = this;
 
@@ -27,7 +27,8 @@ app.controller('OverviewController', ['$scope', '$stateParams', '$timeout', 'Gen
     vm.typeahead = [];
     vm.cluster_names = [];
     vm.orf_names = [];
-    var genome = Genome.get({id: $stateParams.id}, getGenome);
+    vm.submit = submit;
+    var genome = Genome.get({id: $stateParams.id}, getGenome, handleError);
 
 
     var stop = undefined;
@@ -35,6 +36,41 @@ app.controller('OverviewController', ['$scope', '$stateParams', '$timeout', 'Gen
     function selectTarget(name) {
         this.target = name;
     };
+
+    function submit() {
+        var from = 0;
+        var to = 0;
+        if (vm.target.match(/Cluster \d+/)) {
+            var clusters = vm.session.genome.clusters;
+            for (var i in clusters) {
+                if (clusters[i].name == vm.target) {
+                    from = clusters[i].start;
+                    to = clusters[i].end;
+                    break;
+                }
+            }
+        } else if (vm.target.match(/\d+-\d+/)) {
+            var match = vm.target.match(/(\d+)-(\d+)/);
+            from = match[1];
+            to = match[2];
+        } else {
+            var orfs = vm.session.genome.orfs;
+            for (var i in orfs) {
+                if (orfs[i].id == vm.target) {
+                    from = orfs[i].start;
+                    to = orfs[i].end;
+                    break;
+                }
+            }
+        }
+        console.log(from, to);
+        var id = $stateParams.id;
+        $http.post('/api/v1.0/genome/'+id, {from: from, to: to})
+            .then(function(response) {
+                console.log(response.data);
+                $state.go('output', {id: id});
+        });
+    }
 
     function getClusterNames(genome) {
         var clusters = [];
@@ -53,14 +89,12 @@ app.controller('OverviewController', ['$scope', '$stateParams', '$timeout', 'Gen
     }
 
     function getGenome() {
-        console.log(genome);
-
         function update() {
-            genome = Genome.get({id: $stateParams.id}, getGenome)
+            genome = Genome.get({id: $stateParams.id}, getGenome, handleError)
         };
 
         if (genome.state == 'pending') {
-            stop = $timeout(update, 50000);
+            stop = $timeout(update, 5000);
             return;
         }
         if (genome.state == 'loaded') {
@@ -69,8 +103,30 @@ app.controller('OverviewController', ['$scope', '$stateParams', '$timeout', 'Gen
             vm.orf_names = getOrfNames(genome.genome);
             vm.typeahead = vm.cluster_names.concat(vm.orf_names);
         }
+        if (genome.state == 'scanning') {
+            $state.go('output', {id: $stateParams.id});
+        }
     }
 
+    function handleError(response) {
+        vm.session.state = 'error';
+        if (response.status == 404) {
+            vm.session.error_text = 'Session not found, please reupload data.';
+            return;
+        }
+        if (response.status == 500) {
+            vm.session.error_text = 'Server error';
+            return;
+        }
+        vm.session.error_text = 'Unknown error';
+        console.log(response);
+    }
+
+    $scope.$on('$destroy', function(){
+        if (angular.isDefined(stop)) {
+            $timeout.cancel(stop);
+        }
+    });
 }]);
 
 })();

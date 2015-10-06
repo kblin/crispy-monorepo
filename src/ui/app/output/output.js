@@ -10,14 +10,79 @@ app.factory('Crispr', ['$resource', function($resource) {
     return $resource('/api/v1.0/crispr/:id', {id: '@id'});
 }]);
 
-app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http', '$timeout', 'Crispr',
-                                   function($scope, $state, $stateParams, $http, $timeout, Crispr) {
+app.service('cart', function Cart() {
+    var cart = this;
+    cart.add = add;
+    cart.remove = remove;
+    cart.has = has;
+    cart.length = getLength;
+    cart.getIds = getIds;
+
+    var length = 0;
+    var selected_grnas = {};
+
+    function add(id, val) {
+        if (!selected_grnas[id]) {
+            selected_grnas[id] = val;
+            length += 1;
+        }
+    }
+
+    function remove(id) {
+        if (selected_grnas[id]) {
+            delete selected_grnas[id];
+            length -= 1;
+        }
+    }
+
+    function has(id) {
+        return selected_grnas[id];
+    }
+
+    function getLength() {
+        return length;
+    }
+
+    function getIds() {
+        return selected_grnas;
+    }
+});
+
+app.controller('CartController', ['$state', '$stateParams', 'cart',
+                                 function($state, $stateParams, cart) {
+    var vm = this;
+    vm.cart = cart;
+    vm.download = download;
+
+    function download() {
+        $state.go('download', {id: $stateParams.id});
+    }
+}]);
+
+app.controller('DownloadController', ['$stateParams', '$http', '$window', 'cart',
+                                     function($stateParams, $http, $window, cart) {
+    var vm = this;
+    vm.cart = cart;
+    vm.download = download;
+
+    function download() {
+        var id_list = Object.keys(cart.getIds());
+        $http.post('/api/v1.0/crispr/'+$stateParams.id, {ids: id_list})
+            .then(function (response){
+                console.log(response.data.uri);
+                $window.open(response.data.uri, "_self");
+        });
+    }
+}]);
+
+app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http', '$timeout', 'Crispr', 'cart',
+                                   function($scope, $state, $stateParams, $http, $timeout, Crispr, cart) {
     var vm = this;
     vm.session = {};
 
     vm.grnas = {};
     vm.displayed_grnas = [];
-    vm.selected_grnas = {};
+    vm.cart = cart;
 
     $scope.tickHover = tickHover;
     $scope.forDownload = forDownload;
@@ -47,11 +112,9 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
                 vm.displayed_grnas = vm.displayed_grnas.slice(0, 1000);
             }
 
-            console.log(vm.displayed_grnas);
-
             var cluster = {
-                start: 0,
-                end: session.to - session.from,
+                start: session.absolute ? session.from : 0,
+                end: session.absolute ? session.to : session.to - session.from,
                 idx: 1,
                 orfs: session.orfs,
                 label: session.name,
@@ -75,10 +138,10 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
     }
 
     function forDownload(id) {
-        if (!vm.selected_grnas[id]) {
-            vm.selected_grnas[id] = vm.grnas[id];
+        if (!cart.has(id)) {
+            cart.add(id, vm.grnas[id]);
         } else {
-            delete vm.selected_grnas[id];
+            cart.remove(id);
         }
     }
 
