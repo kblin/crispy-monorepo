@@ -93,18 +93,24 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
             genome = Genome.get({id: $stateParams.id}, getGenome, handleError)
         };
 
+        vm.session = genome;
+
         if (genome.state == 'pending') {
             stop = $timeout(update, 5000);
             return;
         }
+        if (genome.state == 'scanning') {
+            $state.go('output', {id: $stateParams.id});
+            return;
+        }
+        if (genome.state == 'error') {
+            console.log(genome);
+            return;
+        }
         if (genome.state == 'loaded') {
-            vm.session = genome;
             vm.cluster_names = getClusterNames(genome.genome);
             vm.orf_names = getOrfNames(genome.genome);
             vm.typeahead = vm.cluster_names.concat(vm.orf_names);
-        }
-        if (genome.state == 'scanning') {
-            $state.go('output', {id: $stateParams.id});
         }
     }
 

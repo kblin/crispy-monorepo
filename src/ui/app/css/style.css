@@ -43,11 +43,11 @@ body {
     cursor: pointer;
     cursor: hand;
 }
-/*
-.clusters-table tbody tr:hover {
+
+.tick-table-active {
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABmJLR0QAAAAAAAD5Q7t/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wkSCzc1El1yyQAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAANSURBVAjXY/j165cTAAkRAzFNlC/xAAAAAElFTkSuQmCC);
 }
-*/
+
 .crispr-details {
     margin-top: 1em;
     padding-top: 1em;
@@ -63,8 +63,8 @@ body {
     stroke: #900;
 }
 .svgene-tick.active {
-    fill: #a00;
-    stroke: #900;
+    fill: #f60;
+    stroke: #f60;
 }
 
 .svgene-type-other {

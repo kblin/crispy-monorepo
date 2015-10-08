@@ -1,14 +1,18 @@
 <div ng-controller="OverviewController as overview">
 <div class="container organism-info">
   <div class="well well-lg">
-    <div ng-show="overview.session.state == 'pending'">{{overview.session.state}}: <img src="/images/loading.gif" /></div>
+    <div ng-show="overview.session.state == 'pending'">
+      {{overview.session.state}}: <img src="/images/loading.gif" /><br>
+      Last updated: {{overview.session.last_updated}}
+    </div>
     <div ng-show="overview.session.state == 'loaded'">
       <em>{{overview.session.genome.organism}}</em> ({{overview.session.genome.id}})<br>
       {{overview.session.genome.description}}<br>
       Sequence length: {{overview.session.genome.length}}<br>
-      {{overview.session.genome.orfs.length}} genes
+      {{overview.session.genome.orfs.length}} genes<br>
+      Loaded at: {{overview.session.last_updated}}
     </div>
-    <div ng-show="overview.session.state == 'error'">Error: {{overview.session.error_text}}</div>
+    <div ng-show="overview.session.state == 'error'">Error: {{overview.session.error}}</div>
   </div>
 </div>
 

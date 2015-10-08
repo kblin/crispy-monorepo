@@ -113,8 +113,8 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             }
 
             var cluster = {
-                start: session.absolute ? session.from : 0,
-                end: session.absolute ? session.to : session.to - session.from,
+                start: 0,
+                end: session.to - session.from,
                 idx: 1,
                 orfs: session.orfs,
                 label: session.name,
@@ -122,6 +122,17 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             };
 
             svgene.drawClusters('cluster', [cluster], 50, 1100);
+            $timeout(function hilight() {
+                $(".svgene-row").mouseover(function(e) {
+                    var tick = $(this).attr('id').replace('-row', '-tick');
+                    $('#'+tick).attr('class', 'svgene-tick active');
+                    d3.select('#'+tick).toFront();
+                }).mouseout(function(e) {
+                    var tick = $(this).attr('id').replace('-row', '-tick');
+                    $('#'+tick).attr('class', 'svgene-tick');
+                });
+            }, 1000);
+
         }
     }
 

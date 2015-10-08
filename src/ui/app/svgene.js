@@ -52,12 +52,13 @@ svgene.drawOrderedClusterOrfs = function(cluster, chart, all_orfs, ticks, scale,
     .attr("id", function(d) { return idx + "-cluster" + cluster.idx + "-" + svgene.tag_to_id(d.id) + "-orf"; })
     .attr("style", function(d) { if (d.color !== undefined) { return "fill:" + d.color; } });
   chart.selectAll("rect")
-    .data(ticks)
+    .data(ticks, function(d) { return d.id })
   .enter().append("rect")
     .attr("x", function(d) { return scale(d.start); })
     .attr("y", function(d) { var offset = 0; if (d.strand == -1) { offset = height * 0.8; }; return (single_cluster_height * i) + svgene.label_height + offset; })
     .attr("height", 10)
     .attr("width", 5)
+    .attr("id", function(d) { return d.id + '-tick'; })
     .attr("class", "svgene-tick");
   chart.selectAll("text")
     .data(all_orfs)
@@ -210,4 +211,14 @@ svgene.init = function() {
         $("#"+id).hide();
     }).click(svgene.tooltip_handler);
     $(".svgene-rescan").click(svgene.rescan);
+    $(".svgene-tick").mouseover(function(e) {
+        var row = $(this).attr("id").replace("-tick", "-row");
+        $("#"+row).addClass('tick-table-active');
+        $(this).attr('class', 'svgene-tick active');
+        d3.select(this).toFront();
+    }).mouseout(function(e) {
+        var row = $(this).attr("id").replace("-tick", "-row");
+        $("#"+row).removeClass('tick-table-active');
+        $(this).attr('class', 'svgene-tick');
+    });
 };

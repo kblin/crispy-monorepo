@@ -1,5 +1,8 @@
 <div class="container" ng-controller="OutputController as output">
-  <div ng-show="output.session.state == 'scanning'">Please wait, {{output.session.state}}. <img src="/images/loading.gif" /></div>
+  <div ng-show="output.session.state == 'scanning'">
+    Please wait, {{output.session.state}}. <img src="/images/loading.gif" /><br>
+    Last updated: {{output.session.last_updated}}
+  </div>
   <div ng-show="output.session.state == 'done'">
     <h4>Region: {{output.session.name}} ({{output.session.from}} - {{output.session.to}})</h4>
     <div id="cluster"></div>
@@ -19,7 +22,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="rna in output.displayed_grnas">
+      <tr ng-repeat="rna in output.displayed_grnas" class="svgene-row" ng-attr-id="{{rna.id}}-row">
         <td class="text-right">{{rna.start}}</td>
         <td class="text-right">{{rna.end}}</td>
         <td class="text-right">{{rna.strand}}</td>
