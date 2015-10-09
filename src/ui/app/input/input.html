@@ -23,13 +23,13 @@
           <label for="gbk">Select a GenBank file</label>
           <div class="input-group">
             <span class="input-group-btn">
-              <span class="btn btn-default btn-file"> Browse <input ng-model="input.file" ngf-select type="file" id="gbk"> </span>
+              <span class="btn btn-default btn-file"> Browse <input ng-model="input.file" ngf-select type="file" id="gbk" required> </span>
             </span>
             <input type="text" class="form-control" value="{{input.file.name}}" readonly>
           </div>
         </div>
         <div class="col-md-4 col-md-offset-1">
-          <button class="btn btn-primary btn-lg btn-block" ng-click="input.uploadGbk(input.file)">Start</button>
+          <button class="btn btn-primary btn-lg btn-block" ng-disabled="uploadForm.$invalid" ng-click="input.uploadGbk(input.file)">Start</button>
         </div>
       </div>
     </form>
