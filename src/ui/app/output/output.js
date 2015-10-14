@@ -173,5 +173,18 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             $timeout.cancel(stop);
         }
     });
+    $scope.$on('$viewContentLoaded', function(){
+        $timeout(function hilight_ticks() {
+            for(var i in vm.displayed_grnas) {
+                var id = vm.displayed_grnas[i].id;
+                if (cart.has(id)) {
+                    var tick = '#' + id + '-tick';
+                    var class_str = $(tick).attr('class').replace(/ selected/, '') + ' selected';
+                    $(tick).attr('class', class_str);
+                    d3.select(tick).toFront();
+                }
+            }
+        }, 150);
+    });
 }]);
 })();
