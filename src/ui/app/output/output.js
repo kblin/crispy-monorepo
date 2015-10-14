@@ -184,7 +184,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
                     d3.select(tick).toFront();
                 }
             }
-        }, 150);
+        }, 500);
     });
 }]);
 })();
