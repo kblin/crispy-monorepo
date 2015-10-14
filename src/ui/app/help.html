@@ -1,0 +1,56 @@
+<div class="container">
+  <h3>Help</h3>
+  <p>To run a Cas9 sgRNA scan for your genome region of interest, you can either
+  upload a GenBank file containing the genome you want to scan for sgRNAs
+  <div class="well well-sm">
+    <img src="/images/help_upload_file.png" class="img-responsive center-block" alt="gbk upload example">
+  </div>
+  or specify an antiSMASH job ID to download the result from.
+  <div class="well well-sm">
+    <img src="/images/help_get_from_antismash.png" class="img-responsive center-block" alt="antiSMASH example">
+  </div></p>
+  <p>Once the sequence has been transferred, you will be able to select a region
+  to scan for sgRNAs.  On top of the page is a short summary of the genome that
+  was uploaded. Right below is a text field that can be used to specify the
+  target region.
+  <div class="well well-sm">
+    <img src="/images/help_select_region.png" class="img-responsive center-block" alt="screenshot of target selection screen">
+  </div>
+  Regions can be selected by entering a range (like <code>12345-67890</code>),
+  the locus tag of any gene found on the genome, or a secondary metabolite gene
+  cluster as predicted by antiSMASH (if available).  The search field will
+  autocomplete both locus tags and cluster names. Secondary metabolite gene
+  clusters are also summarised in a table below the input field.</p>
+
+  <p>Once a target region has been selected, a click on "Find targets" will
+  start the actual scan for sgRNAs. Depending on the size of both the selected
+  region and the overall genome size, this will take from a couple of minutes to
+  a quarter of an hour. Once the scan has completed, you will be presented with
+  a page giving an overview over the scanned region, with the genes displayed as
+  arrows, and the sgRNA sites indicated as red boxes.
+  <div class="well well-sm">
+    <img src="/images/help_cluster_overview.png" class="img-responsive center-block" alt="sgRNA cluster overview">
+  </div>
+  To zoom in to the sgRNAs found within a specific gene, clicking on the gene
+  arrow pops up a small box giving a "Show results for this gene only" link.
+  After selecting that link, you will be redirected to a zoomed view of just the
+  specified gene.
+  <div class="well well-sm">
+    <img src="/images/help_gene_overview.png" class="img-responsive center-block" alt="sgRNA cluster overview">
+  </div>
+  Both views list the up to 1000 best sgRNAs identified, sorted by 2 bp mismatch
+  off-target count, 3 bp mismatch off-target count and location on the genome.
+  Hovering over the table highlights the sgRNA box on the cluster visualisation,
+  and vice versa.
+  Clicking a table row adds the respective sgRNA to the download basket.
+  The basket icon on the upper right displays the number of selected sgRNAs.
+  Clicking on this icon takes you to the download page, where you again get an
+  overview of your selected sgRNAs and an option to download your selection as a
+  comma-separated table that can be opened in a spreadsheet application or text
+  editor.
+  <div class="well well-sm">
+    <img src="/images/help_download.png" class="img-responsive center-block" alt="download page">
+  </div>
+  </p>
+
+</div>

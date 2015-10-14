@@ -60,6 +60,24 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 },
                 shopping: {},
             }
+        })
+        .state('about', {
+            url: '/about',
+            views: {
+                main: {
+                    templateUrl: 'about.html',
+                },
+                shopping: {},
+            }
+        })
+        .state('help', {
+            url: '/help',
+            views: {
+                main: {
+                    templateUrl: 'help.html',
+                },
+                shopping: {},
+            }
         });
 });
 
