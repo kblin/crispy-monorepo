@@ -223,5 +223,8 @@ svgene.init = function() {
         var class_str = $(this).attr('class');
         class_str = class_str.replace(/ active/, '');
         $(this).attr('class', class_str);
+    }).click(function(e) {
+        var row = '#' + $(this).attr("id").replace("-tick", "-row");
+        $(row).click();
     });
 };
