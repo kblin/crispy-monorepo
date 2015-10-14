@@ -70,6 +70,10 @@ body {
     fill: #3CF;
     stroke: #3CF;
 }
+.svgene-tick.selected.active {
+    fill: #9c3;
+    stroke: #9c3;
+}
 .svgene-row.selected {
     color: #3CF;
 }
