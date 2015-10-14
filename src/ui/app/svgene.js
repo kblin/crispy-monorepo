@@ -214,11 +214,14 @@ svgene.init = function() {
     $(".svgene-tick").mouseover(function(e) {
         var row = $(this).attr("id").replace("-tick", "-row");
         $("#"+row).addClass('tick-table-active');
-        $(this).attr('class', 'svgene-tick active');
+        var class_str = $(this).attr('class') + ' active';
+        $(this).attr('class', class_str);
         d3.select(this).toFront();
     }).mouseout(function(e) {
         var row = $(this).attr("id").replace("-tick", "-row");
         $("#"+row).removeClass('tick-table-active');
-        $(this).attr('class', 'svgene-tick');
+        var class_str = $(this).attr('class');
+        class_str = class_str.replace(/ active/, '');
+        $(this).attr('class', class_str);
     });
 };

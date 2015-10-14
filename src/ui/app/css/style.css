@@ -66,6 +66,13 @@ body {
     fill: #f60;
     stroke: #f60;
 }
+.svgene-tick.selected {
+    fill: #3CF;
+    stroke: #3CF;
+}
+.svgene-row.selected {
+    color: #3CF;
+}
 
 .svgene-type-other {
     fill: gray;

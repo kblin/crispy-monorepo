@@ -125,11 +125,23 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             $timeout(function hilight() {
                 $(".svgene-row").mouseover(function(e) {
                     var tick = $(this).attr('id').replace('-row', '-tick');
-                    $('#'+tick).attr('class', 'svgene-tick active');
+                    var class_str = $('#'+tick).attr('class') + ' active';
+                    $('#'+tick).attr('class', class_str);
                     d3.select('#'+tick).toFront();
                 }).mouseout(function(e) {
                     var tick = $(this).attr('id').replace('-row', '-tick');
-                    $('#'+tick).attr('class', 'svgene-tick');
+                    var class_str = $('#'+tick).attr('class').replace(/ active/, '');
+                    $('#'+tick).attr('class', class_str);
+                }).click(function(e) {
+                    var id = $(this).attr('id').replace('-row', '');
+                    var tick = '#' + id + '-tick';
+                    if (cart.has(id)) {
+                        var class_str = $(tick).attr('class') + ' selected';
+                        $(tick).attr('class', class_str);
+                    } else {
+                        var class_str = $(tick).attr('class').replace(/ selected/, '');
+                        $(tick).attr('class', class_str);
+                    }
                 });
             }, 1000);
 

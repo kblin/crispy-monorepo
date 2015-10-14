@@ -22,7 +22,9 @@
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="rna in output.displayed_grnas" class="svgene-row" ng-attr-id="{{rna.id}}-row">
+      <tr ng-repeat="rna in output.displayed_grnas" class="svgene-row"
+          ng-attr-id="{{rna.id}}-row" ng-click="forDownload(rna.id)"
+          ng-class="{selected: output.cart.has(rna.id)}">
         <td class="text-right">{{rna.start}}</td>
         <td class="text-right">{{rna.end}}</td>
         <td class="text-right">{{rna.strand}}</td>
@@ -30,12 +32,12 @@
         <td style="font-family:monospace">{{rna.pam}}</td>
         <td>{{rna['2bpmm']}}</td>
         <td>{{rna['3bpmm']}}</td>
-        <td ng-click="forDownload(rna.id)">
+        <td>
           <span ng-show="output.cart.has(rna.id)">
-            <i class="fa fa-trash"></i>
+            <i class="fa fa-trash fa-lg"></i>
           </span>
           <span ng-hide="output.cart.has(rna.id)">
-            <i class="fa fa-shopping-cart"></i>
+            <i class="fa fa-shopping-cart fa-lg"></i>
           </span>
         </td>
       </tr>
