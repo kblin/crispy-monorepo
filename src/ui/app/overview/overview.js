@@ -65,7 +65,7 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
         }
         console.log(from, to);
         var id = $stateParams.id;
-        $http.post('/api/v1.0/genome/'+id, {from: from, to: to})
+        $http.post('/api/v1.0/genome/'+id, {from: parseInt(from), to: parseInt(to)})
             .then(function(response) {
                 console.log(response.data);
                 $state.go('output', {id: id});
