@@ -49,8 +49,8 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
                     break;
                 }
             }
-        } else if (vm.target.match(/\d+-\d+/)) {
-            var match = vm.target.match(/(\d+)-(\d+)/);
+        } else if (vm.target.match(/\d+\s*-\s*\d+/)) {
+            var match = vm.target.match(/(\d+)\s*-\s*(\d+)/);
             from = match[1];
             to = match[2];
         } else {
