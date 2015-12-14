@@ -101,6 +101,12 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             stop = $timeout(update, 5000);
             return;
         }
+
+        if (session.state == 'loaded') {
+            $state.go('overview', {id: $stateParams.id});
+            return;
+        }
+
         if (session.state == 'done') {
             vm.grnas = session.grnas;
             vm.displayed_grnas = [];
