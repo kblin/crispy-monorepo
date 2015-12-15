@@ -26,7 +26,7 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
     vm.session = {state: 'pending'};
     vm.typeahead = [];
     vm.cluster_names = [];
-    vm.orf_names = [];
+    vm.orf_names = {};
     vm.submit = submit;
     var genome = Genome.get({id: $stateParams.id}, getGenome, handleError);
 
@@ -55,12 +55,10 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
             to = match[2];
         } else {
             var orfs = vm.session.genome.orfs;
-            for (var i in orfs) {
-                if (orfs[i].id == vm.target) {
-                    from = orfs[i].start;
-                    to = orfs[i].end;
-                    break;
-                }
+            if (vm.orf_names[vm.target] !== undefined) {
+                var i = vm.orf_names[vm.target];
+                from = orfs[i].start;
+                to = orfs[i].end;
             }
         }
         console.log(from, to);
@@ -81,12 +79,21 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
     }
 
     function getOrfNames(genome) {
-        var orfs = [];
+        var orfs = {}
         for (var i in genome.orfs) {
-            orfs.push(genome.orfs[i].id);
-        };
+            var orf = genome.orfs[i];
+            if (genome.orfs[i].protein_id !== undefined) {
+                orfs[genome.orfs[i].protein_id] = i;
+            }
+            if (genome.orfs[i].locus_tag !== undefined) {
+                orfs[genome.orfs[i].locus_tag] = i;
+            }
+            if (genome.orfs[i].gene !== undefined) {
+                orfs[genome.orfs[i].gene] = i;
+            }
+        }
         return orfs;
-    }
+    };
 
     function getGenome() {
         function update() {
@@ -110,7 +117,7 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
         if (genome.state == 'loaded') {
             vm.cluster_names = getClusterNames(genome.genome);
             vm.orf_names = getOrfNames(genome.genome);
-            vm.typeahead = vm.cluster_names.concat(vm.orf_names);
+            vm.typeahead = vm.cluster_names.concat(Object.keys(vm.orf_names));
         }
     }
 
