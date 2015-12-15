@@ -22,6 +22,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     controller: 'InputController',
                 },
                 shopping: {},
+                goback: {},
             }
         })
         .state('overview', {
@@ -32,6 +33,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     templateUrl: 'overview/overview.html',
                     controller: 'OverviewController',
                 },
+                goback: {},
                 shopping: {},
             }
         })
@@ -47,6 +49,9 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     templateUrl: 'output/cart.html',
                     controller: 'CartController',
                 },
+                goback: {
+                    templateUrl: 'output/simple_back.html',
+                },
             }
         })
         .state('download', {
@@ -59,6 +64,9 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     controllerAs: 'dl',
                 },
                 shopping: {},
+                goback: {
+                    templateUrl: 'output/simple_back.html'
+                },
             }
         })
         .state('about', {
