@@ -86,6 +86,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
 
     $scope.tickHover = tickHover;
     $scope.forDownload = forDownload;
+    $scope.backToOverview = backToOverview;
 
     var session = Crispr.get({id: $stateParams.id}, getCrisprs);
     var stop = undefined;
@@ -172,6 +173,13 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
         } else {
             cart.remove(id);
         }
+    }
+
+    function backToOverview() {
+        $http.put('/api/v1.0/genome/' + $stateParams.id + '/loaded')
+            .then(function (response){
+                $state.go('overview', {id: $stateParams.id});
+        });
     }
 
     $scope.$on('$destroy', function(){
