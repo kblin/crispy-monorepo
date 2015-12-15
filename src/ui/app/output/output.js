@@ -75,8 +75,29 @@ app.controller('DownloadController', ['$stateParams', '$http', '$window', 'cart'
     }
 }]);
 
-app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http', '$timeout', 'Crispr', 'cart',
-                                   function($scope, $state, $stateParams, $http, $timeout, Crispr, cart) {
+app.controller('FancyBackController', ['$stateParams', '$state', '$http', '$window',
+                                      function($stateParams, $state, $http, $window) {
+    var vm = this;
+    vm.back = back;
+
+    function back() {
+        $http.get('/api/v1.0/crispr/'+$stateParams.id)
+            .then(function (response) {
+                var session = response.data;
+                if (session.derived) {
+                    $window.history.back();
+                    return;
+                }
+                $http.put('/api/v1.0/genome/' + $stateParams.id + '/loaded')
+                    .then(function (response){
+                        $state.go('overview', {id: $stateParams.id});
+                });
+        });
+    }
+}]);
+
+app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http', '$timeout', '$window', 'Crispr', 'cart',
+                                   function($scope, $state, $stateParams, $http, $timeout, $window, Crispr, cart) {
     var vm = this;
     vm.session = {};
 
@@ -176,6 +197,10 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
     }
 
     function backToOverview() {
+        if (session.derived) {
+            $window.history.back();
+            return;
+        }
         $http.put('/api/v1.0/genome/' + $stateParams.id + '/loaded')
             .then(function (response){
                 $state.go('overview', {id: $stateParams.id});

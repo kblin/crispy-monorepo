@@ -50,7 +50,9 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     controller: 'CartController',
                 },
                 goback: {
-                    templateUrl: 'output/simple_back.html',
+                    templateUrl: 'output/fancy_back.html',
+                    controller: 'FancyBackController',
+                    controllerAs: 'fbc',
                 },
             }
         })
