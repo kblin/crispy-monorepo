@@ -27,6 +27,7 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
     vm.typeahead = [];
     vm.cluster_names = [];
     vm.orf_names = {};
+    vm.error = null;
     vm.submit = submit;
     var genome = Genome.get({id: $stateParams.id}, getGenome, handleError);
 
@@ -59,6 +60,9 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
                 var i = vm.orf_names[vm.target];
                 from = orfs[i].start;
                 to = orfs[i].end;
+            } else {
+                vm.error = 'Target "' + vm.target + '" not found!';
+                return;
             }
         }
         console.log(from, to);
