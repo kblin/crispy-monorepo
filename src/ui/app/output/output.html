@@ -1,6 +1,6 @@
 <div class="container" ng-controller="OutputController as output">
   <div ng-show="output.session.state == 'scanning'">
-    Please wait, {{output.session.state}}. <img src="/images/loading.gif" /><br>
+    Please wait, {{output.session.state}}. This can take several minutes. <img src="/images/loading.gif" /><br>
     Last updated: {{output.session.last_updated}}
   </div>
   <div ng-show="output.session.state == 'done'">
