@@ -16,11 +16,6 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
 
     var vm = this;
 
-    $scope.targetTooltip = "You can select the target to predict CRISPR sequences for " +
-        "by either specifying a range (1234-5678), a locus tag (SCO4711), " +
-        "or an antiSMASH-predicted gene cluster (cluster 3)";
-
-
     vm.target = "";
     vm.selectTarget = selectTarget;
     vm.session = {state: 'pending'};
@@ -29,6 +24,7 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
     vm.orf_names = {};
     vm.error = null;
     vm.submit = submit;
+    vm.show_hints = false;
     var genome = Genome.get({id: $stateParams.id}, getGenome, handleError);
 
 
