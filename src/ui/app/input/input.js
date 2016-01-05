@@ -9,10 +9,11 @@ var app = angular.module('crispy.input', [
 app.controller('InputController', ['$scope', 'Upload', '$timeout', '$state', '$http',
                                    function($scope, Upload, $timeout, $state, $http) {
     var vm = this;
-    vm.asID="";
-    vm.file="";
+    vm.asID = "";
+    vm.file = "";
     vm.uploadGbk = uploadGbk;
     vm.submitIdForm = submitIdForm;
+    vm.error = "";
 
     function switchToOverview(response) {
             console.log(response.data);
@@ -29,13 +30,18 @@ app.controller('InputController', ['$scope', 'Upload', '$timeout', '$state', '$h
             data: {gbk: file},
         });
 
-        file.upload.then(switchToOverview);
+        file.upload.then(switchToOverview, handleError);
     };
 
     function submitIdForm() {
         $http.post('/api/v1.0/seqs/id', {asID: vm.asID})
-            .then(switchToOverview);
+            .then(switchToOverview, handleError);
     };
+
+    function handleError(response) {
+        console.log(response);
+        vm.error = response.statusText;
+    }
 }]);
 
 })();

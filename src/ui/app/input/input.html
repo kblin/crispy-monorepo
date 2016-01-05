@@ -15,6 +15,11 @@
         <div class="row">
           <button class="btn btn-primary btn-lg btn-block" ng-disabled="uploadForm.$invalid" ng-click="input.uploadGbk(input.file)">Start</button>
         </div>
+        <div class="form-group row" ng-show="input.error">
+          <p class="text-danger">An error occurred: {{input.error}}<br>
+          Please try again or contact the CRISPy-web maintainers
+          </p>
+        </div>
       </div>
     </form>
   </tab>
@@ -30,6 +35,11 @@
         </div>
         <div class="row">
           <button class="btn btn-primary btn-lg btn-block" ng-disabled="inputForm.$invalid" ng-click="input.submitIdForm()">Start</button>
+        </div>
+        <div class="form-group row" ng-show="input.error">
+          <p class="text-danger">An error occurred: {{input.error}}<br>
+          Please try again or contact the CRISPy-web maintainers
+          </p>
         </div>
       </div>
     </form>
