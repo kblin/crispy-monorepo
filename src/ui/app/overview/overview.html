@@ -3,7 +3,8 @@
   <div class="well well-lg">
     <div ng-show="overview.session.state == 'pending'">
       {{overview.session.state}}: <img src="/images/loading.gif" /><br>
-      Last updated: {{overview.session.last_updated}}
+      Last updated: {{overview.session.last_updated}}<br>
+      <small>This should only take a couple of seconds.</small>
     </div>
     <div ng-show="overview.session.state == 'loaded'">
       <em>{{overview.session.genome.organism}}</em> ({{overview.session.genome.id}})<br>
