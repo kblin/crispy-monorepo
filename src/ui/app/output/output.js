@@ -68,9 +68,11 @@ app.controller('DownloadController', ['$stateParams', '$http', '$window', 'cart'
     function download() {
         var id_list = Object.keys(cart.getIds());
         $http.post('/api/v1.0/crispr/'+$stateParams.id, {ids: id_list})
-            .then(function (response){
+            .then(function success(response){
                 console.log(response.data.uri);
                 $window.open(response.data.uri, "_self");
+        }, function error(response){
+            $window.alert('Failed to contact server: ' + response.statusText);
         });
     }
 }]);
@@ -92,6 +94,8 @@ app.controller('FancyBackController', ['$stateParams', '$state', '$http', '$wind
                     .then(function (response){
                         $state.go('overview', {id: $stateParams.id});
                 });
+        }, function error(response){
+            $window.alert('Failed to contact server: ' + response.statusText)
         });
     }
 }]);
@@ -109,14 +113,15 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
     $scope.forDownload = forDownload;
     $scope.backToOverview = backToOverview;
 
-    var session = Crispr.get({id: $stateParams.id}, getCrisprs);
+    var session = Crispr.get({id: $stateParams.id}, getCrisprs, handleError);
+
     var stop = undefined;
 
     function getCrisprs() {
         vm.session = session;
 
         function update() {
-            session = Crispr.get({id: $stateParams.id}, getCrisprs);
+            session = Crispr.get({id: $stateParams.id}, getCrisprs, handleError);
         }
 
         if (session.state == 'scanning') {
@@ -202,9 +207,13 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             return;
         }
         $http.put('/api/v1.0/genome/' + $stateParams.id + '/loaded')
-            .then(function (response){
+            .then(function susscess(response){
                 $state.go('overview', {id: $stateParams.id});
-        });
+        }, handleError);
+    }
+
+    function handleError(response) {
+        $window.alert('Failed to contact server: ' + response.statusText);
     }
 
     $scope.$on('$destroy', function(){

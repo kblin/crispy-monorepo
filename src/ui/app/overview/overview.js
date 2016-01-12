@@ -64,9 +64,12 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
         console.log(from, to);
         var id = $stateParams.id;
         $http.post('/api/v1.0/genome/'+id, {from: parseInt(from), to: parseInt(to)})
-            .then(function(response) {
+            .then(function success(response) {
                 console.log(response.data);
                 $state.go('output', {id: id});
+        }, function error(response){
+            console.log(response);
+            vm.error = 'Error contacting server: ' + response.statusText + '. Please try again later.';
         });
     }
 
@@ -127,11 +130,7 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
             vm.session.error_text = 'Session not found, please reupload data.';
             return;
         }
-        if (response.status == 500) {
-            vm.session.error_text = 'Server error';
-            return;
-        }
-        vm.session.error_text = 'Unknown error';
+        vm.session.error_text = response.statusText;
         console.log(response);
     }
 
