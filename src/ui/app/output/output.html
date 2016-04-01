@@ -3,6 +3,12 @@
     Please wait, {{output.session.state}}. This can take several minutes. <img src="/images/loading.gif" /><br>
     Last updated: {{output.session.last_updated}}
   </div>
+  <div ng-show="output.session.state == 'error'">
+    An error happened during your analysis: <span class="text-danger">{{output.session.error}}</span><br>
+    Please check if your input sequence is valid. If you think this is an error on the CRISPy-web side,
+    please contact <a href="mailto:kblin@biosustain.dtu.dk">Kai Blin</a><br>
+    Last updated: {{output.session.last_updated}}
+  </div>
   <div ng-show="output.session.state == 'done'">
     <h4>Region: {{output.session.name}} ({{output.session.from}} - {{output.session.to}})</h4>
     <div id="cluster"></div>

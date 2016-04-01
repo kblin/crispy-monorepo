@@ -134,6 +134,10 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             return;
         }
 
+        if (session.state == 'error') {
+            return;
+        }
+
         if (session.state == 'done') {
             vm.grnas = session.grnas;
             vm.displayed_grnas = [];
