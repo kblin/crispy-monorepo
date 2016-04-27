@@ -186,11 +186,14 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
     }
 
     function qualityRank(a, b){
-        var res = a['2bpmm'] - b['2bpmm'];
-        if (res != 0) {
-            return res;
+        var parameters = ['0bpmm', '1bpmm', '2bpmm', '3bpmm'];
+        for (var i in parameters) {
+             var res = a[parameters[i]] - b[parameters[i]];
+            if (res != 0) {
+                return res;
+            }
         }
-        return a['3bpmm'] - b['3bpmm'];
+        return a['start'] - b['start'];
     }
 
     function tickHover(tick_id) {

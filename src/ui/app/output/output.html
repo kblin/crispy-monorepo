@@ -25,6 +25,8 @@
         <th class="text-right">Strand</th>
         <th>Sequence</th>
         <th>PAM</th>
+        <th>0bp mismatches</th>
+        <th>1bp mismatches</th>
         <th>2bp mismatches</th>
         <th>3bp mismatches</th>
         <th>Download</th>
@@ -39,6 +41,8 @@
         <td class="text-right">{{rna.strand}}</td>
         <td style="font-family:monospace">{{rna.sequence}}</td>
         <td style="font-family:monospace">{{rna.pam}}</td>
+        <td>{{rna['0bpmm']}}</td>
+        <td>{{rna['1bpmm']}}</td>
         <td>{{rna['2bpmm']}}</td>
         <td>{{rna['3bpmm']}}</td>
         <td>
