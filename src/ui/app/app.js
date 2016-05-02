@@ -88,6 +88,15 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 },
                 shopping: {},
             }
+        })
+        .state('news', {
+            url: '/news',
+            views: {
+                main: {
+                    templateUrl: 'news.html',
+                },
+                shopping: {},
+            }
         });
 });
 
