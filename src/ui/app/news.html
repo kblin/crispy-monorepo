@@ -1,6 +1,22 @@
 <div class="container">
   <h3>News</h3>
   <div class="panel panel-default">
+    <div class="panel-heading"><span class="news-date">2016-10-17</span><span class="news-heading">Version 1.1.1 of CRISPy-web released.</span></div>
+    <div class="panel-body">
+      We just released version 1.1.1 of CRISPy-web, that fixes the job queue getting stuck occasionally.
+      <h4>Highlights</h4>
+      <ul>
+        <li>
+          <strong>Job queue no longer gets stuck.</strong><br>
+          Due to an unexpected interaction between the pypy interpreter
+          and our Redis-based job queue, we would occasionally see jobs
+          getting stuck in "running" state forever. We fixed the code to
+          avoid this particular error mode.
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel panel-default">
     <div class="panel-heading"><span class="news-date">2016-05-02</span><span class="news-heading">Version 1.1.0 of CRISPy-web released.</span></div>
     <div class="panel-body">
       We just released version 1.1.0 of CRISPy-web with some bug fixes and improvements based on user feedback.
