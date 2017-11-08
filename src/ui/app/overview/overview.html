@@ -33,6 +33,21 @@
       <span class="help-block" ng-show="overview.error">{{overview.error}}</span>
     </div>
     <div class="form-group">
+      <label for="target" class="control-label col-sm-2">Select Cas enzype type</label>
+      <div class="col-sm-2">
+        <select class="form-control" ng-model="overview.selected_type" ng-options="item as item.label for item in overview.pam_types track by item.id">
+        </select>
+      </div>
+      <label class="control-label col-sm-1">PAM:</label>
+      <div class="col-sm-1">
+        <input class="form-control" type="text" placeholder="{{overview.selected_type.pam}}" readonly>
+      </div>
+      <label class="control-label col-sm-2">Full sgRNA size:</label>
+      <div class="col-sm-1">
+          <input class="form-control" type="text" placeholder="{{overview.selected_type.full_size - overview.selected_type.pam.length}}" readonly>
+      </div>
+    </div>
+    <div class="form-group">
       <div class="panel panel-default">
         <div class="panel-heading" ng-click="overview.show_hints = !overview.show_hints">
           <i class="fa fa-info-circle"></i> &nbsp; Usage hints

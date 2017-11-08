@@ -25,6 +25,20 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
     vm.error = null;
     vm.submit = submit;
     vm.show_hints = false;
+    vm.pam_types = [{
+        id: 'cas9',
+        label: 'Cas9',
+        full_size: 23,
+        unique_size: 13,
+        pam: 'NGG'
+    },{
+        id: 'cas13a',
+        label: 'Cas13a',
+        full_size: 28,
+        unique_size: 13,
+        pam: 'NGG',
+    }];
+    vm.selected_type = vm.pam_types[0];
     var genome = Genome.get({id: $stateParams.id}, getGenome, handleError);
 
 
@@ -37,6 +51,8 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
     function submit() {
         var from = 0;
         var to = 0;
+        var full_size = vm.selected_type.full_size;
+
         if (vm.target.match(/Cluster \d+/)) {
             var clusters = vm.session.genome.clusters;
             for (var i in clusters) {
@@ -63,7 +79,7 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
         }
         console.log(from, to);
         var id = $stateParams.id;
-        $http.post('/api/v1.0/genome/'+id, {from: parseInt(from), to: parseInt(to)})
+        $http.post('/api/v1.0/genome/'+id, {from: parseInt(from), to: parseInt(to), full_size: parseInt(full_size)})
             .then(function success(response) {
                 console.log(response.data);
                 $state.go('output', {id: id});
