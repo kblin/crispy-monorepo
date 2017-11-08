@@ -29,8 +29,8 @@
         <div class="form-group row">
           <label for="asID">Enter antiSMASH job ID</label>
           <input type="text" class="form-control" id="asID" name="asID"
-                 placeholder="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" ng-model="input.asID" required
-                 ng-pattern="/^([0-F]{8}-[0-F]{4}-[0-F]{4}-[0-F]{4}-[0-F]{12}|example)$/i">
+                 placeholder="taxon-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" ng-model="input.asID" required
+                 ng-pattern="/^(bacteria-[0-F]{8}-[0-F]{4}-[0-F]{4}-[0-F]{4}-[0-F]{12}|example)$/i">
                  <i class="form-control-feedback fa fa-close" ng-show="inputForm.$error.asID.pattern"></i>
         </div>
         <div class="row">
