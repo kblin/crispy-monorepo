@@ -5,6 +5,7 @@
   "description": "A web UI for the CRISPR/Cas9 guide RNA predictor CRISPy",
   "devDependencies": {
     "bower": "^1.5.2",
+    "eslint": "^4.10.0",
     "http-server": "^0.8.4"
   },
   "scripts": {
