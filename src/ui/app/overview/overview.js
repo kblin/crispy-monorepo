@@ -32,9 +32,9 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
         unique_size: 13,
         pam: 'NGG'
     },{
-        id: 'cas13a',
-        label: 'Cas13a',
-        full_size: 28,
+        id: 'c2c2',
+        label: 'C2c2',
+        full_size: 31,
         unique_size: 13,
         pam: 'NGG',
     }];
