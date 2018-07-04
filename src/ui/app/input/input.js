@@ -14,6 +14,11 @@ app.controller('InputController', ['$scope', 'Upload', '$timeout', '$state', '$h
     vm.uploadGbk = uploadGbk;
     vm.submitIdForm = submitIdForm;
     vm.error = "";
+    vm.news = [];
+
+    $http.get('/api/v1.0/news').then(function(response){
+        vm.news = response.data.entries;
+    });
 
     function switchToOverview(response) {
             console.log(response.data);

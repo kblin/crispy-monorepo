@@ -9,6 +9,11 @@ var app = angular.module('crispy', [
     'crispy.output',
 ]);
 
+app.filter('stripHtml', function() {
+    return function(text) {
+        return text ? String(text).replace(/<[^>]+>/gm, '') : '';
+    };
+});
 
 app.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/input');
@@ -85,15 +90,6 @@ app.config(function($stateProvider, $urlRouterProvider) {
             views: {
                 main: {
                     templateUrl: 'help.html',
-                },
-                shopping: {},
-            }
-        })
-        .state('news', {
-            url: '/news',
-            views: {
-                main: {
-                    templateUrl: 'news.html',
                 },
                 shopping: {},
             }
