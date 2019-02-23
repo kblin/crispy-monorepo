@@ -53,7 +53,7 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
         var to = 0;
         var full_size = vm.selected_type.full_size;
 
-        if (vm.target.match(/Cluster \d+/)) {
+        if (vm.target.match(/Region \d+/)) {
             var clusters = vm.session.genome.clusters;
             for (var i in clusters) {
                 if (clusters[i].name == vm.target) {
