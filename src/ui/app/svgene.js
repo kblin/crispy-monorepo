@@ -57,7 +57,7 @@ svgene.drawOrderedClusterOrfs = function(cluster, chart, all_orfs, ticks, scale,
     .attr("x", function(d) { return scale(d.start); })
     .attr("y", function(d) { var offset = 0; if (d.strand == -1) { offset = height * 0.8; }; return (single_cluster_height * i) + svgene.label_height + offset; })
     .attr("height", 10)
-    .attr("width", 5)
+    .attr("width", function(d) { return Math.max(scale(d.end - d.start), 5)})
     .attr("id", function(d) { return d.id + '-tick'; })
     .attr("class", "svgene-tick");
   chart.selectAll("text")
