@@ -31,7 +31,7 @@
         <th>ORF</th>
         <th>Sequence</th>
         <th>PAM</th>
-        <th>edit window</th>
+        <th>mutations</th>
         <th>0 bp</th>
         <th>1 bp</th>
         <th>2 bp</th>
@@ -48,7 +48,7 @@
         <td>{{rna.orf}}</td>
         <td style="font-family:monospace">{{rna.sequence}}</td>
         <td style="font-family:monospace">{{rna.pam}}</td>
-        <td><span ng-show="rna.can_edit" style="font-family:monospace">{{rna.edit_window}}</span><span ng-hide="rna.can_edit">-</span></td>
+        <td>{{rna.changed_aas.join(", ")}}</td>
         <td>{{rna['0bpmm']}}</td>
         <td>{{rna['1bpmm']}}</td>
         <td>{{rna['2bpmm']}}</td>
