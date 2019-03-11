@@ -17,11 +17,16 @@
     <div ng-hide="output.displayed_grnas.length > 0">
       No results found. <a ng-click="backToOverview()">Go back to overview</a> and change the search area.
     </div>
+    <div ng-show="output.updating_display">
+      Updating displayed gRNAs, please wait.
+    </div>
+    <label><input type="checkbox" id="show-best" ng-model="output.best"> Show CRISPR-BEST output (experimental)</label>
+    <label ng-if="output.best"><input type="checkbox" id="only-stops" ng-model="output.stops_only" ng-change="updateGrnas()"> Show only STOP mutations</label>
     <table class="table table-striped table-hover" ng-show="output.displayed_grnas.length > 0">
       <thead>
       <tr>
         <th colspan="6"></th>
-        <th>CRISPR-BEST</th>
+        <th ng-if="output.best">CRISPR-BEST</th>
         <th colspan="4">Offtarget hits with mismatches of:</th>
       </tr>
       <tr>
@@ -31,7 +36,7 @@
         <th>ORF</th>
         <th>Sequence</th>
         <th>PAM</th>
-        <th>mutations</th>
+        <th ng-if="output.best">mutations</th>
         <th>0 bp</th>
         <th>1 bp</th>
         <th>2 bp</th>
@@ -48,7 +53,7 @@
         <td>{{rna.orf}}</td>
         <td style="font-family:monospace">{{rna.sequence}}</td>
         <td style="font-family:monospace">{{rna.pam}}</td>
-        <td>{{rna.changed_aas.join(", ")}}</td>
+        <td ng-if="output.best">{{rna.changed_aas.join(", ")}}</td>
         <td>{{rna['0bpmm']}}</td>
         <td>{{rna['1bpmm']}}</td>
         <td>{{rna['2bpmm']}}</td>

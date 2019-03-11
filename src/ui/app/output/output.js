@@ -108,10 +108,13 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
     vm.grnas = {};
     vm.displayed_grnas = [];
     vm.cart = cart;
+    vm.best = false;
+    vm.stops_only = false;
 
     $scope.tickHover = tickHover;
     $scope.forDownload = forDownload;
     $scope.backToOverview = backToOverview;
+    $scope.updateGrnas = filterGrnas;
 
     var session = Crispr.get({id: $stateParams.id}, getCrisprs, handleError);
 
@@ -140,14 +143,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
 
         if (session.state == 'done') {
             vm.grnas = session.grnas;
-            vm.displayed_grnas = [];
-            for (var tick_id in vm.grnas){
-                vm.displayed_grnas.push(vm.grnas[tick_id]);
-            }
-            vm.displayed_grnas.sort(qualityRank);
-            if (vm.displayed_grnas.length > 1000) {
-                vm.displayed_grnas = vm.displayed_grnas.slice(0, 1000);
-            }
+            filterGrnas();
 
             var cluster = {
                 start: 0,
@@ -183,6 +179,32 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             }, 1000);
 
         }
+    }
+
+    function filterGrnas(){
+        vm.displayed_grnas = [];
+        var new_grnas = [];
+        for (var tick_id in vm.grnas){
+            var grna = vm.grnas[tick_id];
+            if (vm.stops_only) {
+                var found = false;
+                for (var changed_aa of grna.changed_aas) {
+                    if (changed_aa.includes("*")) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    continue;
+                }
+            }
+            new_grnas.push(grna);
+        }
+        new_grnas.sort(qualityRank);
+        if (new_grnas.length > 1000) {
+            new_grnas = new_grnas.slice(0, 1000);
+        }
+        vm.displayed_grnas = new_grnas;
     }
 
     function qualityRank(a, b){
