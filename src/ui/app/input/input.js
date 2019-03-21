@@ -17,7 +17,7 @@ app.controller('InputController', ['$scope', 'Upload', '$timeout', '$state', '$h
     vm.news = [];
 
     $http.get('/api/v1.0/news').then(function(response){
-        vm.news = response.data.entries;
+        vm.news = response.data.entries.slice(0, 3);
     });
 
     function switchToOverview(response) {
