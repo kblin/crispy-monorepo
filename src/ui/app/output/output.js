@@ -3,6 +3,7 @@
 (function(){
 
 var app = angular.module('crispy.output', [
+    'ui.bootstrap',
     'ui.router',
 ]);
 
@@ -110,6 +111,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
     vm.cart = cart;
     vm.best = false;
     vm.stops_only = false;
+    vm.mode = "CtoT";
 
     $scope.tickHover = tickHover;
     $scope.forDownload = forDownload;
@@ -186,10 +188,16 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
         var new_grnas = [];
         for (var tick_id in vm.grnas){
             var grna = vm.grnas[tick_id];
-            if (vm.stops_only) {
+            if (vm.best && (!grna.can_edit || !grna.can_edit[vm.mode])) {
+                continue;
+            }
+            if (vm.stops_only && vm.mode == "CtoT") {
                 var found = false;
-                for (var changed_aa of grna.changed_aas) {
-                    if (changed_aa.includes("*")) {
+                if (!grna.changed_aas[vm.mode]) {
+                    continue;
+                }
+                for (var changed_aa of grna.changed_aas[vm.mode]) {
+                    if (changed_aa[changed_aa.length - 1] == "*") {
                         found = true;
                         break;
                     }

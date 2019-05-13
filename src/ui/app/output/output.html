@@ -20,8 +20,21 @@
     <div ng-show="output.updating_display">
       Updating displayed gRNAs, please wait.
     </div>
-    <label><input type="checkbox" id="show-best" ng-model="output.best"> Show CRISPR-BEST output (experimental)</label>
-    <label ng-if="output.best"><input type="checkbox" id="only-stops" ng-model="output.stops_only" ng-change="updateGrnas()"> Show only STOP mutations</label>
+    <button class="btn btn-primary" type="button" id="show-best" ng-model="output.best"
+      btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false" ng-change="updateGrnas()">
+      <i ng-if="!output.best" class="fa fa-square-o"></i>
+      <i ng-if="output.best" class="fa fa-check-square-o"></i>
+      CRISPR-BEST mode</button>
+    <div class="btn-group" data-toggle="buttons" ng-if="output.best">
+      <label class="btn btn-primary" ng-model="output.mode" btn-radio="'CtoT'" ng-change="updateGrnas()">C to T</label>
+      <label class="btn btn-primary" ng-model="output.mode" btn-radio="'AtoG'" ng-change="updateGrnas()">A to G</label>
+    </div>
+    <button type="button" class="btn btn-default" ng-if="output.best && output.mode == 'CtoT'" ng-model="output.stops_only"
+      ng-change="updateGrnas()" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+      <i ng-if="!output.stops_only" class="fa fa-square-o"></i>
+      <i ng-if="output.stops_only" class="fa fa-check-square-o"></i>
+      Show only STOP mutations
+    </button>
     <table class="table table-striped table-hover" ng-show="output.displayed_grnas.length > 0">
       <thead>
       <tr>
@@ -53,7 +66,7 @@
         <td>{{rna.orf}}</td>
         <td style="font-family:monospace">{{rna.sequence}}</td>
         <td style="font-family:monospace">{{rna.pam}}</td>
-        <td ng-if="output.best">{{rna.changed_aas.join(", ")}}</td>
+        <td ng-if="output.best">{{rna.changed_aas[output.mode].join(", ")}}</td>
         <td>{{rna['0bpmm']}}</td>
         <td>{{rna['1bpmm']}}</td>
         <td>{{rna['2bpmm']}}</td>
