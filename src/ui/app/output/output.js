@@ -116,7 +116,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
     $scope.tickHover = tickHover;
     $scope.forDownload = forDownload;
     $scope.backToOverview = backToOverview;
-    $scope.updateGrnas = filterGrnas;
+    $scope.updateGrnas = updateGrnas;
 
     var session = Crispr.get({id: $stateParams.id}, getCrisprs, handleError);
 
@@ -147,7 +147,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             vm.grnas = session.grnas;
             filterGrnas();
 
-            var cluster = {
+            vm.cluster = {
                 start: 0,
                 end: session.to - session.from,
                 idx: 1,
@@ -156,31 +156,32 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
                 ticks: vm.displayed_grnas,
             };
 
-            svgene.drawClusters('cluster', [cluster], 50, 1100);
-            $timeout(function hilight() {
-                $(".svgene-row").mouseover(function(e) {
-                    var tick = $(this).attr('id').replace('-row', '-tick');
-                    var class_str = $('#'+tick).attr('class') + ' active';
-                    $('#'+tick).attr('class', class_str);
-                    d3.select('#'+tick).toFront();
-                }).mouseout(function(e) {
-                    var tick = $(this).attr('id').replace('-row', '-tick');
-                    var class_str = $('#'+tick).attr('class').replace(/ active/, '');
-                    $('#'+tick).attr('class', class_str);
-                }).click(function(e) {
-                    var id = $(this).attr('id').replace('-row', '');
-                    var tick = '#' + id + '-tick';
-                    if (cart.has(id)) {
-                        var class_str = $(tick).attr('class') + ' selected';
-                        $(tick).attr('class', class_str);
-                    } else {
-                        var class_str = $(tick).attr('class').replace(/ selected/, '');
-                        $(tick).attr('class', class_str);
-                    }
-                });
-            }, 1000);
-
+            svgene.drawClusters('cluster', [vm.cluster], 50, 1100);
+            $timeout(hilight, 1000);
         }
+    }
+
+    function hilight() {
+        $(".svgene-row").mouseover(function(e) {
+            var tick = $(this).attr('id').replace('-row', '-tick');
+            var class_str = $('#'+tick).attr('class') + ' active';
+            $('#'+tick).attr('class', class_str);
+            d3.select('#'+tick).toFront();
+        }).mouseout(function(e) {
+            var tick = $(this).attr('id').replace('-row', '-tick');
+            var class_str = $('#'+tick).attr('class').replace(/ active/, '');
+            $('#'+tick).attr('class', class_str);
+        }).click(function(e) {
+            var id = $(this).attr('id').replace('-row', '');
+            var tick = '#' + id + '-tick';
+            if (cart.has(id)) {
+                var class_str = $(tick).attr('class') + ' selected';
+                $(tick).attr('class', class_str);
+            } else {
+                var class_str = $(tick).attr('class').replace(/ selected/, '');
+                $(tick).attr('class', class_str);
+            }
+        });
     }
 
     function filterGrnas(){
@@ -213,6 +214,13 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             new_grnas = new_grnas.slice(0, 1000);
         }
         vm.displayed_grnas = new_grnas;
+    }
+
+    function updateGrnas() {
+        filterGrnas();
+        vm.cluster.ticks = vm.displayed_grnas;
+        svgene.drawClusters('cluster', [vm.cluster], 50, 1100);
+        $timeout(hilight, 1000);
     }
 
     function qualityRank(a, b){
