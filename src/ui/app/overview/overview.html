@@ -48,6 +48,16 @@
       </div>
     </div>
     <div class="form-group">
+      <label for="best-size" class="control-label col-sm-3">CRISPR BEST edit window size</label>
+      <div class="col-sm-1">
+        <input class="form-control" type="number" id="best-size" ng-model="overview.best_size">
+      </div>
+      <label for="best-offset" class="control-label col-sm-3">CRISPR BEST edit window offset from PAM</label>
+      <div class="col-sm-1">
+        <input class="form-control" type="number" id="best-offset" ng-model="overview.best_offset">
+      </div>
+    </div>
+    <div class="form-group">
       <div class="panel panel-default">
         <div class="panel-heading" ng-click="overview.show_hints = !overview.show_hints">
           <i class="fa fa-info-circle"></i> &nbsp; Usage hints

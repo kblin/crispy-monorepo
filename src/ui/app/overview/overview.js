@@ -25,6 +25,8 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
     vm.error = null;
     vm.submit = submit;
     vm.show_hints = false;
+    vm.best_size = 7;
+    vm.best_offset = 13;
     vm.pam_types = [{
         id: 'cas9',
         label: 'Cas9',
@@ -79,7 +81,8 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
         }
         console.log(from, to);
         var id = $stateParams.id;
-        $http.post('/api/v1.0/genome/'+id, {from: parseInt(from), to: parseInt(to), full_size: parseInt(full_size)})
+        $http.post('/api/v1.0/genome/'+id, {from: parseInt(from), to: parseInt(to), full_size: parseInt(full_size),
+                                            best_size: vm.best_size, best_offset: vm.best_offset})
             .then(function success(response) {
                 console.log(response.data);
                 $state.go('output', {id: id});
