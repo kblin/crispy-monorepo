@@ -18,6 +18,7 @@ app.service('cart', function Cart() {
     cart.has = has;
     cart.length = getLength;
     cart.getIds = getIds;
+    cart.clear = clear;
 
     var length = 0;
     var selected_grnas = {};
@@ -46,6 +47,11 @@ app.service('cart', function Cart() {
 
     function getIds() {
         return selected_grnas;
+    }
+
+    function clear() {
+        selected_grnas = {};
+        length = 0;
     }
 });
 
@@ -144,6 +150,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
         }
 
         if (session.state == 'done') {
+            cart.clear();
             vm.grnas = session.grnas;
             filterGrnas();
 
@@ -247,6 +254,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
     }
 
     function backToOverview() {
+        cart.clear();
         if (session.derived) {
             $window.history.back();
             return;
