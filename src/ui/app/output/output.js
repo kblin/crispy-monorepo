@@ -156,7 +156,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
                 ticks: vm.displayed_grnas,
             };
 
-            svgene.drawClusters('cluster', [vm.cluster], 50, 1100);
+            svgene.drawClusters('cluster', [vm.cluster], 50, 1100, session.best_size, session.best_offset);
             $timeout(hilight, 1000);
         }
     }

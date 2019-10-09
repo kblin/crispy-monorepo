@@ -96,7 +96,7 @@ svgene.drawUnorderedClusterOrfs = function(cluster, chart, all_orfs, ticks, scal
     .text(function(d) { return d.id; });
 };
 
-svgene.drawClusters = function(id, clusters, height, width) {
+svgene.drawClusters = function(id, clusters, height, width, best_size, best_offset) {
   var container = d3.select("#" + id);
   var single_cluster_height = height + svgene.label_height;
   container.selectAll("svg").remove();
@@ -130,7 +130,7 @@ svgene.drawClusters = function(id, clusters, height, width) {
         .attr("class", "svgene-tooltip")
         .attr("id", function(d) { return idx + "-cluster" + cluster.idx + "-" + svgene.tag_to_id(d.id) + "-tooltip"; })
         .html(function(d) { return '<h5>'+d.id+'</h5><a class="svgene-rescan" href="' + window.location.hash + '" id="' + svgene.tag_to_id(d.id) +
-            '-rescan" data-from="' + d.start + '" data-to="' + d.end +'">Show results for this gene only</a>'});
+            '-rescan" data-from="' + d.start + '" data-to="' + d.end +'" data-size="' + best_size + '" data-offset="' + best_offset + '">Show results for this gene only</a>'});
   }
   for (i=0; i < clusters.length; i++) {
       var cluster = clusters[i];
@@ -183,15 +183,22 @@ svgene.tooltip_handler = function(ev) {
 
 
 svgene.rescan = function(ev) {
-    var from = $(this).attr('data-from');
-    var to = $(this).attr('data-to');
+    var from = parseInt($(this).attr('data-from'));
+    var to = parseInt($(this).attr('data-to'));
+    var best_size = parseInt($(this).attr('data-size'));
+    var best_offset = parseInt($(this).attr('data-offset'));
     var id = window.location.hash.split('/').pop();
     var uri = '/api/v1.0/genome/' + id;
     $.ajax({
         url: uri,
         method: 'POST',
         contentType: 'application/json',
-        data: '{"from": ' + from + ', "to":' + to +'}',
+        data: JSON.stringify({
+            from: from,
+            to: to,
+            best_size: best_size,
+            best_offset: best_offset,
+        }),
         success: function(data) {
             var uri_components = window.location.hash.split('/');
             uri_components.pop();
