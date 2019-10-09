@@ -25,6 +25,7 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
     vm.error = null;
     vm.submit = submit;
     vm.show_hints = false;
+    vm.show_expert_settings = false;
     vm.best_size = 7;
     vm.best_offset = 13;
     vm.pam_types = [{
