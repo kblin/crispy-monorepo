@@ -9,6 +9,6 @@
     "http-server": "^0.8.4"
   },
   "scripts": {
-    "start": "http-server -a localhost -p 8000 app"
+    "start": "http-server -a 127.0.0.1 -p 8000 -P http://127.0.0.1:5555 app"
   }
 }
