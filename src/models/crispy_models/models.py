@@ -7,7 +7,6 @@ from typing import Any, Dict, Optional, Union
 
 from redis import Redis
 
-
 class Session(object):
     """A CRISPy web session object"""
     def __init__(self, db: Redis, from_id: Optional[str] = None, from_file: Optional[str] = None,
@@ -46,12 +45,14 @@ class Session(object):
             'full_size': 23,
             'best_size': 7,
             'best_offset': 13,
+            'if_tnpb':json.dumps(False),
         }
 
         self._session_id = random.getrandbits(128)
         self._session_key = 'crispy:session:{0:039d}'.format(self._session_id)
 
         self._db.hset(self._session_key, mapping=session)  # type: ignore
+
 
     def _load_from_db(self, session_id: int):
         "load an existing session from the database"
@@ -239,6 +240,18 @@ class Session(object):
     def best_offset(self, value):
         self._update_timestamp()
         self._db.hset(self._session_key, 'best_offset', value)
+
+    @property
+    def if_tnpb(self) -> bool:
+        ret = self._db.hget(self._session_key, 'if_tnpb')
+        assert ret
+        return json.loads(ret)
+
+    @if_tnpb.setter
+    def if_tnpb(self, value: bool):
+        assert isinstance(value, bool), f"type of value is {type(value)}, not bool"
+        self._update_timestamp()
+        self._db.hset(self._session_key, 'if_tnpb', json.dumps(value))
 
 
 class Queue(object):
