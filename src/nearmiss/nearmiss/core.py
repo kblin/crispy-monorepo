@@ -35,6 +35,26 @@ def check_area(area: Tuple[int, int]) -> bool:
     return True
 
 
+def TnpB_check_area(area: Tuple[int, int]) -> bool:
+    """ Ensures that a tuple of ints indicating a search area is valid.
+
+        Arguments:
+            area: the area coordinates
+
+        Returns:
+            True if valid, otherwise an error is raised with specific details
+    """
+    if not isinstance(area, tuple):
+        raise TypeError("expected tuple, not %s" % type(area))
+    if len(area) != 2 or not all(isinstance(i, int) for i in area):
+        raise ValueError("expected tuple of two ints, not {!r}".format(area))
+    start, end = area
+    if start > end:
+        raise ValueError("start after end in window before anchor")
+
+    return True
+
+
 class Searcher(_Tree):
     """ A class that builds a suffix tree of text and can search for specific
         text along with inexact matches in the same or other text.
@@ -95,7 +115,10 @@ class Searcher(_Tree):
 
         if other_text is None:
             other_text = self._text
-        check_area(before_window)
+        if target != "TTGAT":
+            check_area(before_window)
+        else:
+            TnpB_check_area(before_window)
 
         if before_window[1] - before_window[0] < max_distance:
             raise ValueError("max distance is larger than search window size")
@@ -104,4 +127,10 @@ class Searcher(_Tree):
         hits = super().find_repeat_counts(anchors, target, max_distance,
                                           before_window[0], before_window[1],
                                           other_text, threads)
-        return dict(hits)
+        print(type(hits))
+        res = []
+        seq = []
+        for i in hits:
+            res.append(i[:2])
+            seq.append(i[2].split('$'))
+        return dict(res),seq

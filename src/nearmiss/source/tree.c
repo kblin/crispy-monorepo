@@ -141,7 +141,6 @@ count(SuffixArray const* tree, char* query, char* anchor, int downstreamStart)
                     count += 1;
                 }
             }
-
             for (right = center + 1; right < tree->_length && strncmp(query, TREE_SHIFT(tree, right), queryLength) == 0; right++) {
                 window = TREE_SHIFT(tree, right);
                 if (strncmp(anchor, window - downstreamStart, anchorLength) == 0) {
@@ -184,6 +183,42 @@ find_inexact(SuffixArray const* tree, int anchorStart, int downstreamStart, int 
     }
 }
 
+//11-01
+void
+find_inexact_seq(SuffixArray const* tree, int anchorStart, int downstreamStart, int downstreamEnd,
+                  int maxNumChanges, int depth, int *counts, char *query, int changeStart,
+                  char* anchor,char* seq)
+{
+    const char* options = "ACGT";
+    int i = 0;
+    int position = downstreamStart + changeStart;
+    int hits = count(tree, query, anchor, downstreamStart);
+    counts[depth] += hits;
+    if(changeStart == 0){
+        seq[0] = '\0';
+        strcat(seq, query);
+        };
+    if(hits != 0 && changeStart != 0){
+        strcat(seq, "$");
+        strcat(seq, query);
+    };
+    if (depth == maxNumChanges) {
+        return;
+    }
+    for (i = changeStart; position < downstreamEnd; position++, i++) {
+        char original = query[i];
+        int option = 0;
+        for (option = 0; option < 4; option++) {
+            if (options[option] == original) {
+                continue;
+            }
+            query[i] = options[option];
+            find_inexact_seq(tree, anchorStart, downstreamStart, downstreamEnd, maxNumChanges, depth + 1, counts, query, i + 1, anchor,seq);
+        }
+        query[i] = original;
+    }
+}
+
 PyObject*
 find_mismatches(Tree const* tree, PyObject *anchors, char *anchorText, int maxDistance,
         int downstreamStart, int downstreamEnd, SuffixArray *other, int threads)
@@ -200,6 +235,13 @@ find_mismatches(Tree const* tree, PyObject *anchors, char *anchorText, int maxDi
     int anchorCount = PyObject_Length(anchors);
     long *anchorStarts = malloc(sizeof(long) * anchorCount);
     int **allCounts = malloc(sizeof(int*) * anchorCount);
+    char **charls;
+    charls = (char **)malloc(anchorCount * sizeof(char *));
+    int h = 0;
+    for (h = 0; h < anchorCount; h++) {
+        charls[h] = (char *)malloc(10000 * sizeof(char));
+        strcpy(charls[h], "");
+    }
     for (i = 0; i < anchorCount; i++) {
         anchorStarts[i] = PyLong_AsLong(PyList_GetItem(anchors, i));
         allCounts[i] = malloc(size);
@@ -215,17 +257,29 @@ find_mismatches(Tree const* tree, PyObject *anchors, char *anchorText, int maxDi
         long anchorStart = anchorStarts[i];
         int *counts = allCounts[i];
         char *query = NULL;
+        char *query_full = NULL;
+
+
+        char* seq = charls[i];
         /* skip any anchor that would read off the end of the text */
         if (anchorStart < -downstreamStart) {
             continue;
         }
         memset(counts, 0, size);
+
         query = strndup(sequence + (anchorStart + downstreamStart), downstreamEnd - downstreamStart);
+        query_full = strndup(sequence + (anchorStart),25);
 
+//        printf("The original query is :%s\n",query);
+//        printf("###%s\n");
+//        printf("The full 23bp seq is :%s\n",query_full);
         find_inexact(other, anchorStart, downstreamStart, downstreamEnd, maxDistance, 0, counts, query, 0, anchorText);
-
+        find_inexact_seq(other, anchorStart, downstreamStart, downstreamEnd, maxDistance, 0, counts, query, 0, anchorText,seq);
+//        printf("the final seq is:%s\n",charls[i]);
+        free(query_full);
         free(query);
     }
+
     /* now that the threaded section is complete, build/update all the relevant python objects
        this is slower than doing it in the threaded section, but much safer until
        those threading issues are resolved
@@ -233,6 +287,7 @@ find_mismatches(Tree const* tree, PyObject *anchors, char *anchorText, int maxDi
     for (i = 0; i < anchorCount; i++) {
         int distance = 0;
         int *counts = allCounts[i];
+        char* seq = charls[i];
         PyObject* anchorResult = PyList_New(maxDistance + 1);
         for (distance = 0; distance < maxDistance + 1; distance++) {
             PyList_SetItem(anchorResult, distance, PyLong_FromLong((long) counts[distance]));
@@ -242,11 +297,22 @@ find_mismatches(Tree const* tree, PyObject *anchors, char *anchorText, int maxDi
         /* NN => build a tuple of two objects:
             the first being the anchor object
             the second being the list of hit counts
-         */
-        PyList_Append(list, Py_BuildValue("NN", PyList_GetItem(anchors, i), anchorResult));
+        */
+//        printf("one loop start\n");
+        PyList_Append(list, Py_BuildValue("NNN", PyList_GetItem(anchors, i), anchorResult, PyUnicode_FromString(seq)));
+//        printf("one loop end\n");
     }
+    printf("the end");
+    // 释放内存
+    int h1 = 0;
+    for (h1 = 0; h1 < anchorCount; h1++) {
+    free(charls[h1]);
+    }
+
+    free(charls);
     free(anchorStarts);
     free(allCounts);
+
     return list;
 }
 
@@ -279,7 +345,7 @@ Tree_find_repeat_counts(Tree* tree, PyObject* args)
         return NULL;
     }
 
-    if (downstreamStart >= 0 || downstreamEnd > 0) {
+    if ((downstreamStart >= 0 || downstreamEnd > 0)&& strcmp(anchorText, "TTGAT") != 0) {
         PyErr_SetString(PyExc_ValueError, "downstream coordinates must be relative (i.e. negative or zero)");
         return NULL;
     }
