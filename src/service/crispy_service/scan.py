@@ -22,7 +22,7 @@ def main():  # noqa: C901  # no, flake8, it's not too complex
                         default='redis://127.0.0.1:6379/0',
                         help='URI of the Queue server')
     parser.add_argument('-u', '--upload-dir', dest='upload_dir',
-                        default='../uploads',
+                        default='../../uploads',
                         help='Path to directory where the session files are stored')
     parser.add_argument('-t', '--threads', dest='threads',
                         type=int, default=2,
@@ -34,24 +34,37 @@ def main():  # noqa: C901  # no, flake8, it's not too complex
         logging.basicConfig(format='%(levelname)s %(asctime)s: %(message)s', level=logging.INFO)
 
     UPLOAD_PATH = path.abspath(args.upload_dir)
+    # print(UPLOAD_PATH)
 
     db = redis.Redis.from_url(args.queue, decode_responses=True)
     queue = Queue(db, 'scan')
     while True:
         job_key = queue.next()
+
         if job_key is None:
+            print(None)
             time.sleep(1)
             continue
+        else:
+            print("success")
 
         logging.info('processing {}'.format(job_key))
         job_id = int(job_key.split(':')[-1])
         job = Session(db, session_id=job_id)
+        # print(str(job.if_tnpb)+'==========================================================================================')
+        if job.if_tnpb:
+            job.pam = "TTGAT"
+        elif not job.if_tnpb:
+            job.pam = "GG"
+        # print("job.pam===================================================",job.pam)
         dirname = path.join(UPLOAD_PATH, str(job_id))
+
 
         try:
             # TODO: Once the rest of the code handles record lists, use the full list.
             record = list(SeqIO.parse(path.join(dirname, job.filename), 'genbank'))[0]
             target_region = record[job.from_coord:job.to_coord]
+
 
             results = crispy_scan([record], target_region, job.pam, job.uniq_size, job.full_size, threads=args.threads)
 

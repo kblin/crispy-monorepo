@@ -5,24 +5,25 @@ import requests
 from os import path
 from io import StringIO
 from Bio import SeqIO
-from . import utils
+from crispy_service import utils
 
 BASE_URL = 'https://antismash.secondarymetabolites.org/upload/{id}'
 
 
+#
 def grab_index(asID):
     """Get the index.html file for an antiSMASH ID"""
     index_url = '{}/index.html'.format(BASE_URL.format(id=asID))
-    index = requests.get(index_url)
-    index.raise_for_status()
-    return index.text
+    index = requests.get(index_url)# grad the antismash information
+    index.raise_for_status()#test if our spider is successful or not
+    return index.text#so this func is to grab antismash inf
 
 
 def find_dl_link(text):
     """Find the correct download link in the index.html page text"""
     pattern = re.compile(r'href=["]?(?P<link>[a-zA-Z0-9_.-]+)["]?>[ ]?Download GenBank summary file')
     match = pattern.search(text)
-    link = match.group('link')
+    link = match.group('link') #get link
     if link.endswith('final.gbk'):
         return link
     return link[:-3] + 'json'
@@ -33,7 +34,7 @@ def download_gbk(asID, link):
     download_url = '{}/{}'.format(BASE_URL.format(id=asID), link)
     req = requests.get(download_url)
     req.raise_for_status()
-    return req.text
+    return req.text#download_gbk
 
 
 def genome_json(seq_rec):

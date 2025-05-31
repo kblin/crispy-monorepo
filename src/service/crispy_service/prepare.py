@@ -2,6 +2,8 @@
 """Prepare sequences for CRISPy processing"""
 
 import json
+import random
+from datetime import datetime
 import redis
 import argparse
 import logging
@@ -28,7 +30,7 @@ def main():  # noqa: C901  # no, flake8, it's not too complex
                         default='redis://127.0.0.1:6379/0',
                         help='URI of the Queue server')
     parser.add_argument('-u', '--upload-dir', dest='upload_dir',
-                        default='../uploads',
+                        default='../../uploads',
                         help='Path to directory where the session files are stored')
     parser.add_argument('-V', '--version', action="version", version=version.__version__)
     args = parser.parse_args()
@@ -39,17 +41,33 @@ def main():  # noqa: C901  # no, flake8, it's not too complex
     UPLOAD_PATH = path.abspath(args.upload_dir)
 
     db = redis.Redis.from_url(args.queue, decode_responses=True)
+    # # 查看所有键
+    # keys = db.keys('*')  # 使用 * 获取所有键
+    # print("All keys in the database:")
+    # for key in keys:
+    #     print(key)
+
     queue = Queue(db, 'prepare')
+    print(queue._key)
+
     while True:
         job_key = queue.next()
+        print(job_key)
+
         if job_key is None:
             time.sleep(1)
+            print('None')
             continue
+
         logging.info('processing {}'.format(job_key))
         job_id = int(job_key.split(':')[-1])
         job = Session(db, session_id=job_id)
+        print(str(job.if_tnpb)+'=============================')
+        # print("PESeq = "+str(job.PESeq))
         dirname = path.join(UPLOAD_PATH, str(job_id))
+        #search
         if job.asid:
+
             logging.info('grabbing file for id {}'.format(job.asid))
             try:
                 json_rec, filename = fetch(job.asid, dirname)
@@ -91,10 +109,13 @@ def main():  # noqa: C901  # no, flake8, it's not too complex
                 job.error = 'Invalid input file'
                 continue
 
+
+
         job.genome = json_rec
         job.state = 'loaded'
 
         logging.info('done with {}'.format(job_key))
+
 
 
 if __name__ == '__main__':
