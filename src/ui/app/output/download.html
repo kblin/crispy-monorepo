@@ -14,12 +14,16 @@
       <th class="text-right">Strand</th>
       <th>ORF</th>
       <th>Sequence</th>
-      <th>PAM</th>
+      <th ng-if="dl.firstValue.pam != 'NNN'">PAM</th>
+      <th ng-if="dl.firstValue.pam == 'NNN'">TAM</th>
       <th>C to T mutations</th>
       <th>A to G mutations</th>
-      <th>0bp mismatches</th>
-      <th>1bp mismatches</th>
-      <th>2bp mismatches</th>
+      <th ng-if="dl.firstValue.pam != 'NNN'">sgRNA score</th>
+<!--      <th>test</th>-->
+
+      <!--<th>0bp mismatches</th>-->
+      <!--<th>1bp mismatches</th>-->
+      <!--<th>2bp mismatches</th>-->
     </tr>
     </thead>
     <tbody>
@@ -29,14 +33,19 @@
       <td class="text-right">{{rna.end}}</td>
       <td class="text-right">{{rna.strand}}</td>
       <td>{{rna['orf']}}</td>
-      <td style="font-family:monospace">{{rna.sequence}}</td>
-      <td style="font-family:monospace">{{rna.pam}}</td>
+      <td style="font-family:monospace" ng-if="dl.firstValue.pam != 'NNN'">{{rna.sequence}}</td>
+      <td style="font-family:monospace" ng-if="dl.firstValue.pam == 'NNN'">{{rna.tnpb_Seq}}</td>
+      <td style="font-family:monospace" ng-if="dl.firstValue.pam != 'NNN'">{{rna.pam}}</td>
+      <td style="font-family:monospace" ng-if="dl.firstValue.pam == 'NNN'">{{rna.tam}}</td>
       <td style="font-family:monospace">{{rna.changed_aas.CtoT.join(", ")}}</td>
       <td style="font-family:monospace">{{rna.changed_aas.AtoG.join(", ")}}</td>
-      <td>{{rna['0bpmm']}}</td>
-      <td>{{rna['1bpmm']}}</td>
-      <td>{{rna['2bpmm']}}</td>
+      <td ng-if="dl.firstValue.pam != 'NNN'">{{rna['Mix_Score']}}</td>
+<!--      <td>{{dl.firstValue.pam}}</td>-->
+
+      <!--<td>{{rna['1bpmm']}}</td>-->
+      <!--<td>{{rna['2bpmm']}}</td>-->
     </tr>
     </tbody>
+
   </table>
 </div>

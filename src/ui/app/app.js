@@ -7,6 +7,7 @@ var app = angular.module('crispy', [
     'crispy.input',
     'crispy.overview',
     'crispy.output',
+
 ]);
 
 app.filter('stripHtml', function() {
@@ -93,7 +94,8 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 },
                 shopping: {},
             }
-        });
+        })
+    ;
 });
 
 })();

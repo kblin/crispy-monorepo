@@ -40,6 +40,12 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
         full_size: 31,
         unique_size: 13,
         pam: 'NGG',
+    },{
+        id: 'tnpb',
+        label: 'TnpB',
+        full_size: 25,
+        unique_size: 13,
+        pam: 'TTGAT',
     }];
     vm.selected_type = vm.pam_types[0];
     var genome = Genome.get({id: $stateParams.id}, getGenome, handleError);
@@ -55,6 +61,12 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
         var from = 0;
         var to = 0;
         var full_size = vm.selected_type.full_size;
+        var pro_type = vm.selected_type.id;
+        var flag = false;
+        console.log(flag,"=============================");
+        if(pro_type == 'tnpb'){
+            console.log('yes','========================================================================')
+            flag = true;}
 
         if (vm.target.match(/Region \d+/)) {
             var clusters = vm.session.genome.clusters;
@@ -80,15 +92,16 @@ app.controller('OverviewController', ['$scope', '$state', '$stateParams', '$time
                 return;
             }
         }
-        console.log(from, to);
+        // console.log("oi~",from, to);
         var id = $stateParams.id;
         $http.post('/api/v1.0/genome/'+id, {from: parseInt(from), to: parseInt(to), full_size: parseInt(full_size),
-                                            best_size: vm.best_size, best_offset: vm.best_offset})
+                                            best_size: vm.best_size, best_offset: vm.best_offset,flag:flag})
             .then(function success(response) {
-                console.log(response.data);
+                // console.log("oi~")
+                // console.log(response.data);
                 $state.go('output', {id: id});
         }, function error(response){
-            console.log(response);
+            // console.log(response);
             vm.error = 'Error contacting server: ' + response.statusText + '. Please try again later.';
         });
     }

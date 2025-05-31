@@ -13,15 +13,22 @@
       {{overview.session.genome.orfs.length}} genes<br>
       Loaded at: {{overview.session.last_updated}}
     </div>
-    <div ng-show="overview.session.state == 'error'">Error: {{overview.session.error}}</div>
+<!--    <div ng-show="overview.session.state == 'error'"></div>-->
+<!--    ErrorYYYYY: {{overview.session.error}}-->
   </div>
 </div>
 
 <div class="container" ng-show="overview.session.state == 'loaded'">
   <form class="form-horizontal" name="targetForm" novalidate>
-    <div class="form-group" ng-class="{'has-error': overview.error}">
-      <label for="target" class="control-label col-sm-2">Select target</label>
-      <div class="input-group col-sm-8">
+    <div class="form-group" ng-class="{'has-error': overview.error}"  style="display: flex; align-items: center; gap: 10px;">
+      <div style="flex: 0 0 auto; margin-right: 10px;">
+    <label class="control-label"  style="font-size: larger;">Enzymes</label>
+  </div>
+      <div style="flex: 0 0 auto;">
+    <select class="form-control" ng-model="overview.selected_type" ng-options="item as item.label for item in overview.pam_types track by item.id" style="width: 100%;"></select>
+  </div>
+      <label for="target" class="control-label col-sm-2" style="font-size: larger;">Select target</label>
+      <div class="input-group col-sm-7">
         <input type="text" class="form-control" id="target" placeholder="Range, locus tag or cluster number" ng-model="overview.target"
                typeahead="name for name in overview.typeahead | filter:$viewValue | limitTo:8" required>
         <span class="input-group-btn">
@@ -41,26 +48,29 @@
         </div>
         <div class="panel-body" ng-show="overview.show_expert_settings">
           <div class="row">
-            <label for="target" class="control-label col-sm-2">Select Cas enzype type</label>
+            <label for="target" class="control-label col-sm-2">Select enzymes</label>
             <div class="col-sm-2">
-              <select class="form-control" ng-model="overview.selected_type" ng-options="item as item.label for item in overview.pam_types track by item.id">
+              <select class="form-control" ng-model="overview.selected_type" ng-options="item as item.label for item in overview.pam_types track by item.id" >
               </select>
             </div>
-            <label class="control-label col-sm-1">PAM:</label>
+            <label class="control-label col-sm-1" ng-if="overview.selected_type.pam != 'TTGAT'">PAM:</label>
+            <label class="control-label col-sm-1" ng-if="overview.selected_type.pam == 'TTGAT'">TAM:</label>
             <div class="col-sm-1">
-              <input class="form-control" type="text" placeholder="{{overview.selected_type.pam}}" readonly>
+              <input class="form-control" type="text" placeholder="{{overview.selected_type.pam}}" readonly style="width: 100px;">
             </div>
-            <label class="control-label col-sm-2">Full sgRNA size:</label>
+            <label class="control-label col-sm-2">Protospacer:</label>
             <div class="col-sm-1">
                 <input class="form-control" type="text" placeholder="{{overview.selected_type.full_size - overview.selected_type.pam.length}}" readonly>
             </div>
           </div>
           <div class="row">
-            <label for="best-size" class="control-label col-sm-3">CRISPR BEST edit window size</label>
+            <label for="best-size" class="control-label col-sm-3" ng-if="overview.selected_type.pam != 'TTGAT'">CRISPR BEST edit window size</label>
+            <label for="best-size" class="control-label col-sm-3" ng-if="overview.selected_type.pam == 'TTGAT'">TnpB BEST edit window size</label>
             <div class="col-sm-1">
               <input class="form-control" type="number" id="best-size" ng-model="overview.best_size">
             </div>
-            <label for="best-offset" class="control-label col-sm-4">CRISPR BEST edit window offset from PAM</label>
+            <label for="best-offset" class="control-label col-sm-4" ng-if="overview.selected_type.pam != 'TTGAT'">CRISPR BEST edit window offset from PAM</label>
+            <label for="best-offset" class="control-label col-sm-4" ng-if="overview.selected_type.pam == 'TTGAT'">TnpB BEST edit window offset from TAM</label>
             <div class="col-sm-1">
               <input class="form-control" type="number" id="best-offset" ng-model="overview.best_offset">
             </div>

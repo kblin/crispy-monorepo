@@ -135,3 +135,36 @@ body {
     font-size: 80%;
     padding: 0.5em;
 }
+.svgene-tooltip {
+    border: 1px solid slategray;
+    background-color: #303030;
+    display: none;
+    position: absolute;
+    font-size: 80%;
+    padding: 0.5em;
+}
+.score-header {
+    position: relative;
+    display: inline-block;
+    padding-left: 14px;
+    line-height: 1.2;
+    vertical-align: top;
+}
+
+.superscript-link {
+    position: absolute;
+    left: -6px;
+    top: calc(-0.7em + 2px);
+    line-height: 1;
+    z-index: 1;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+.superscript-icon {
+    width: 14px;
+    height: 14px;
+    /* 备用阴影方案 */
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}

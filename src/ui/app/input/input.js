@@ -15,10 +15,16 @@ app.controller('InputController', ['$scope', 'Upload', '$timeout', '$state', '$h
     vm.submitIdForm = submitIdForm;
     vm.error = "";
     vm.news = [];
+    //test
+    vm.homo = []
+
 
     $http.get('/api/v1.0/news').then(function(response){
         vm.news = response.data.entries.slice(0, 3);
     });
+    // $http.get('api/v1.0/sodayou').then(function(response){
+    //     vm.homo = response.data.entries.slice(0,2);
+    // })
 
     function switchToOverview(response) {
             console.log(response.data);
