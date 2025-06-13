@@ -291,6 +291,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
         for (var tick_id in vm.grnas){
 
             var grna = vm.grnas[tick_id];
+            grna["0bpmm"] += 1;
 
 
             if (!vm.uniqueORFs.includes(grna.orf)) {
@@ -670,11 +671,11 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
         let headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "1 bp", "2 bp", "exact match", "Score"];
     let real_headers = ["start","end","strand","orf","sequence","pam","1bpmm","2bpmm","0bpmm","Mix_Score"];
 
-        if(vm.crisi){
+        if(vm.crisi & !vm.if_tnpb){
     console.log("this is crisi==================================================");
      headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "1 bp", "2 bp", "exact match", "CRISPRi_Score"];
      real_headers = ["start","end","strand","orf","sequence","pam","1bpmm","2bpmm","0bpmm","CRISPRi_score"];}
-        else if(vm.best){
+        else if(vm.best & !vm.if_tnpb){
 
             if(vm.mode=="CtoT") {headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "Mutations","1 bp", "2 bp", "exact match", "Score"];
     real_headers = ["start","end","strand","orf","sequence","pam","CtoT","1bpmm","2bpmm","0bpmm","Mix_Score"];
