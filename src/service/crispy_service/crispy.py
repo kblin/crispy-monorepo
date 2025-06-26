@@ -442,7 +442,7 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
             for pam_start, result in sorted(results.items(), key=lambda x: x[1]):
                 # set the window location, accounting for strand
                 if strand == -1:
-                    start = len(needle.seq) - pam_start - full_size - len(pam)
+                    start = len(needle.seq) - pam_start - full_size
                     end = start + full_size
                 else:
                     start = pam_start
