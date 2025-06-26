@@ -73,7 +73,7 @@ app.controller('DownloadController', ['$stateParams', '$http', '$window', 'cart'
     vm.cart = cart;
     vm.download = download;
 
-    vm.firstKey = Object.keys(cart.getIds())[0];  // 获取第一个 key
+    vm.firstKey = Object.keys(cart.getIds())[0];  // get the first key
     vm.firstValue = cart.getIds()[vm.firstKey];
 
 
@@ -711,7 +711,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
     // Create a download link
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'grnas.csv'; // 下载文件的名称
+    link.download = 'grnas.csv'; // download
 
     // Simulation: Click on the download link
     link.click();
