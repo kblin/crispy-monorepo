@@ -91,11 +91,11 @@ app.controller('DownloadController', ['$stateParams', '$http', '$window', 'cart'
                 // $window.location.href = "/root/PycharmProjects/uploads/254797663007824033610028945489267829316/output.csv";
                 const filename = 'crispr-results.csv';
 
-                // 2. 创建 Blob 对象（假设后端返回的是 CSV 字符串）
-                const csvData = response.data;  // 如果后端返回的是 JSON，需在此处转换为 CSV 格式
+                // 2. Create a blob object (assuming the backend returns a CSV string)
+                const csvData = response.data;  
                 const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
 
-                //3.
+                //3.If the backend is returning JSON, you'll need to convert it to CSV format here
                 const link = document.createElement('a');
                 const url = window.URL.createObjectURL(blob);
                 link.href = url;
@@ -103,16 +103,16 @@ app.controller('DownloadController', ['$stateParams', '$http', '$window', 'cart'
                 link.style.visibility = 'hidden';
 
 
-                // 4. 触发下载
+                // 4. Trigger the download
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                window.URL.revokeObjectURL(url); // 释放内存
+                window.URL.revokeObjectURL(url); // Free up memory
 
         }, function error(response){
             $window.alert('Failed to contact server: ' + response.statusText);
-            console.error("请求失败:", response);
-            $window.alert('服务器错误: ' + response.statusText);
+            console.error("Request Failed:", response);
+            $window.alert('Server Error: ' + response.statusText);
         });
     }
 }]);
@@ -229,8 +229,8 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             filterGrnas();
 
             // console.log("session========================",session);
-        const firstKey = Object.keys(session.grnas)[0]; // 获取第一个键
-        const firstValue = session.grnas[firstKey]; // 获取对应的值
+        const firstKey = Object.keys(session.grnas)[0]; // Get the first key
+        const firstValue = session.grnas[firstKey]; // Get the corresponding value
         if(firstValue.pam != "NNN"){
             session.if_tnpb = false;
         }else {
@@ -662,12 +662,12 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
 
 
     function download() {
-    // 假设 vm.displayed_grnas 是一个数组，每个元素是一个对象，表示一行数据
+    
     //     console.log("vm.displayed_grnas==========",vm.displayed_grnas)
     const data = vm.displayed_grnas;
     console.log(data[0]);
 
-    // 定义 CSV 文件的列标题
+    // Define the column headers for the CSV file
         let headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "1 bp", "2 bp", "exact match", "Score"];
     let real_headers = ["start","end","strand","orf","sequence","pam","1bpmm","2bpmm","0bpmm","Mix_Score"];
 
@@ -686,10 +686,10 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
                             real_headers = ["start","end","strand","orf","tam","sequence","1bpmm","2bpmm","0bpmm"]}
 
 
-    // 创建一个包含列标题的数组
+    // Create an array of column headers
     const csvRows = [headers.join(',')];
 
-    // 遍历数据，将每一行转换为 CSV 格式
+    // Iterate through the data to convert each row to CSV format
     data.forEach(row => {
 
         console.log("row==========",row)
@@ -702,21 +702,21 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
         csvRows.push(values.join(','));
     });
 
-    // 将 CSV 数据转换为字符串
+    // Convert CSV data to strings
     const csvString = csvRows.join('\n');
 
-    // 创建一个 Blob 对象，用于生成下载链接
+    // Create a blob object that generates a download link
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
 
-    // 创建一个下载链接
+    // Create a download link
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'grnas.csv'; // 下载文件的名称
 
-    // 模拟点击下载链接
+    // Simulation: Click on the download link
     link.click();
 
-    // 释放 URL 对象
+    // Dispose of the URL object
     URL.revokeObjectURL(link.href);
 }
 
