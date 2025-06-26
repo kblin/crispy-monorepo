@@ -73,7 +73,7 @@ app.controller('DownloadController', ['$stateParams', '$http', '$window', 'cart'
     vm.cart = cart;
     vm.download = download;
 
-    vm.firstKey = Object.keys(cart.getIds())[0];  // get the first key
+    vm.firstKey = Object.keys(cart.getIds())[0];  // 获取第一个 key
     vm.firstValue = cart.getIds()[vm.firstKey];
 
 
@@ -91,11 +91,11 @@ app.controller('DownloadController', ['$stateParams', '$http', '$window', 'cart'
                 // $window.location.href = "/root/PycharmProjects/uploads/254797663007824033610028945489267829316/output.csv";
                 const filename = 'crispr-results.csv';
 
-                // 2. Create a blob object (assuming the backend returns a CSV string)
-                const csvData = response.data;  
+                // 2. 创建 Blob 对象（假设后端返回的是 CSV 字符串）
+                const csvData = response.data;  // 如果后端返回的是 JSON，需在此处转换为 CSV 格式
                 const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
 
-                //3.If the backend is returning JSON, you'll need to convert it to CSV format here
+                //3.
                 const link = document.createElement('a');
                 const url = window.URL.createObjectURL(blob);
                 link.href = url;
@@ -103,16 +103,16 @@ app.controller('DownloadController', ['$stateParams', '$http', '$window', 'cart'
                 link.style.visibility = 'hidden';
 
 
-                // 4. Trigger the download
+                // 4. 触发下载
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                window.URL.revokeObjectURL(url); // Free up memory
+                window.URL.revokeObjectURL(url); // 释放内存
 
         }, function error(response){
             $window.alert('Failed to contact server: ' + response.statusText);
-            console.error("Request Failed:", response);
-            $window.alert('Server Error: ' + response.statusText);
+            console.error("请求失败:", response);
+            $window.alert('服务器错误: ' + response.statusText);
         });
     }
 }]);
@@ -229,8 +229,8 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             filterGrnas();
 
             // console.log("session========================",session);
-        const firstKey = Object.keys(session.grnas)[0]; // Get the first key
-        const firstValue = session.grnas[firstKey]; // Get the corresponding value
+        const firstKey = Object.keys(session.grnas)[0]; // 获取第一个键
+        const firstValue = session.grnas[firstKey]; // 获取对应的值
         if(firstValue.pam != "NNN"){
             session.if_tnpb = false;
         }else {
@@ -291,7 +291,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
         for (var tick_id in vm.grnas){
 
             var grna = vm.grnas[tick_id];
-            grna["0bpmm"] += 1;
+            
 
 
             if (!vm.uniqueORFs.includes(grna.orf)) {
@@ -491,9 +491,46 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
            }
         }
 
-        console.log('grna is:',grna.pam[2]);
+        console.log('grna is:',grna);
         // console.log(new_grnas,"new_grnas");
-        if(!vm.if_tnpb){
+        // if(!vm.if_tnpb){
+        // if(vm.sortbyscore){
+        //     console.log("sortbyscore");
+        //     new_grnas.sort(scoreRank);
+        //     vm.sortby0bp = false;
+        //     vm.sortby1bp = false;
+        //     vm.sortby2bp = false;
+        // }else if(vm.sortby0bp){
+        //     new_grnas.sort(sortby0bp);
+        //     vm.sortby1bp = false;
+        //     vm.sortby2bp = false;
+        //     vm.sortbyscore = false;
+        // }else if(vm.sortby1bp){
+        //     console.log("sortby1bp");
+        //     new_grnas.sort(sortby1bp);
+        //     vm.sortby0bp = false;
+        //     vm.sortby2bp = false;
+        //     vm.sortbyscore = false;
+        // }else if(vm.sortby2bp){
+        //     new_grnas.sort(sortby2bp);
+        //     vm.sortby1bp = false;
+        //     vm.sortby0bp = false;
+        //     vm.sortbyscore = false;
+        // }
+        new_grnas.sort(qualityRank);
+        console.log("log");
+        // }else{
+        //     if(vm.sortbyTnpB1bp){new_grnas.sort(sortbyTnpB1bp);}
+        //     else if(vm.sortbyTnpB2bp){new_grnas.sort(sortbyTnpB2bp)}
+        //     else if(vm.sortbyTnpB0bp){new_grnas.sort(sortbyTnpB0bp)}
+        // }
+        console.log(new_grnas.length,"length============================================================================================");
+        // console.log(new_grnas);
+        if (new_grnas.length > 1000) {
+            new_grnas = new_grnas.slice(0, 1000);
+            
+        }
+                if(!vm.if_tnpb){
         if(vm.sortbyscore){
             console.log("sortbyscore");
             new_grnas.sort(scoreRank);
@@ -517,14 +554,12 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             vm.sortby0bp = false;
             vm.sortbyscore = false;
         }
+        new_grnas.sort(qualityRank);
+        console.log("log");
         }else{
             if(vm.sortbyTnpB1bp){new_grnas.sort(sortbyTnpB1bp);}
             else if(vm.sortbyTnpB2bp){new_grnas.sort(sortbyTnpB2bp)}
             else if(vm.sortbyTnpB0bp){new_grnas.sort(sortbyTnpB0bp)}
-        }
-
-        if (new_grnas.length > 1000) {
-            new_grnas = new_grnas.slice(0, 1000);
         }
         vm.displayed_grnas = new_grnas;
     }
@@ -662,12 +697,12 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
 
 
     function download() {
-    
+    // 假设 vm.displayed_grnas 是一个数组，每个元素是一个对象，表示一行数据
     //     console.log("vm.displayed_grnas==========",vm.displayed_grnas)
     const data = vm.displayed_grnas;
     console.log(data[0]);
 
-    // Define the column headers for the CSV file
+    // 定义 CSV 文件的列标题
         let headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "1 bp", "2 bp", "exact match", "Score"];
     let real_headers = ["start","end","strand","orf","sequence","pam","1bpmm","2bpmm","0bpmm","Mix_Score"];
 
@@ -686,10 +721,10 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
                             real_headers = ["start","end","strand","orf","tam","sequence","1bpmm","2bpmm","0bpmm"]}
 
 
-    // Create an array of column headers
+    // 创建一个包含列标题的数组
     const csvRows = [headers.join(',')];
 
-    // Iterate through the data to convert each row to CSV format
+    // 遍历数据，将每一行转换为 CSV 格式
     data.forEach(row => {
 
         console.log("row==========",row)
@@ -702,21 +737,21 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
         csvRows.push(values.join(','));
     });
 
-    // Convert CSV data to strings
+    // 将 CSV 数据转换为字符串
     const csvString = csvRows.join('\n');
 
-    // Create a blob object that generates a download link
+    // 创建一个 Blob 对象，用于生成下载链接
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
 
-    // Create a download link
+    // 创建一个下载链接
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'grnas.csv'; // download
+    link.download = 'grnas.csv'; // 下载文件的名称
 
-    // Simulation: Click on the download link
+    // 模拟点击下载链接
     link.click();
 
-    // Dispose of the URL object
+    // 释放 URL 对象
     URL.revokeObjectURL(link.href);
 }
 
