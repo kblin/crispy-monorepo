@@ -58,7 +58,7 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
             'start': location.start + 5,
             'end': location.end - 5,
             'strand': location.strand,
-            'sequence': str(seq_section[4:-3]),
+            'sequence': str(seq_section[0:-3]),
             'pam': str(seq_section[-3:]),
             'tam':"TTGAT",
             'all_hits': result,  # new to JSON, for handy sorting
@@ -73,8 +73,10 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
         # print(seq_section[:-3])
         # add remaining mismatch info
         for i, val in enumerate(result[1:]):
-            base['{}bpmm'.format(i+1)] = val
+            base['{}bpmm'.format(i+1)] = val//2
         # print(result)
+        # print(base['1bpmm'],"=======================base")
+        # print("hey,i have updated base")
         return base
 
     # set the size of the window to the unique size
@@ -82,10 +84,12 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
     before_window = (-unique_size - 1, -1)
     #for TnpB protein
     TnpB_window = (5, 18)
+    # Cas3_window = (-27,-1)
 
     final_result = []
 
     comparison_text = build_comparison_text(haystack, unique_size)
+    #Score_Sys_start===============================================================================================================
     #first  version score sys
     score_sys = {"CA":[0.428,0.571,0.333,0.4,0.263,0.21,0.214,0.273,0,0.176,0.19,0.207,0.227],"GA":[0.733,0.667,0.556,0.65,0.722,0.652,0.467,0.65,0.192,0.176,0.4,0.375,0.765],
                  "TA":[0.429,0.6,0.882,0.308,0.333,0.3,0.533,0.2,0,0.133,0.5,0.538,0.6],"AC":[0.65,0.857,0.867,0.75,0.714,0.385,0.35,0.222,1,0.467,0.538,0.429,0.5],
@@ -153,9 +157,9 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
                '1C': 0.179639101,
                '4T': -0.116646129}
     SCORE = {"INPAIR_OFFTARGET_0": 5000,
-             "INPAIR_OFFTARGET_1": 3000,
-             "INPAIR_OFFTARGET_2": 2000,
-             "INPAIR_OFFTARGET_3": 1000,
+             "INPAIR_OFFTARGET_1": 500,
+             "INPAIR_OFFTARGET_2": 50,
+             "INPAIR_OFFTARGET_3": 5,
              "OFFTARGET_PAIR_SAME_STRAND": 10000,
              "OFFTARGET_PAIR_DIFF_STRAND": 5000,
              "PAM_IN_PENALTY": 1000,
@@ -298,13 +302,18 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
         else:
             #it depend on this to find mismatch
             searcher = Searcher(str(needle.seq))
-
+        print("pam =  "+pam)
         if pam == "GG":
 
             results = searcher.find_repeat_counts(target=pam, before_window=before_window,
                                                   other_text=comparison_text, threads=threads)[0]
             results_seq = searcher.find_repeat_counts(target=pam, before_window=before_window,
                                                   other_text=comparison_text, threads=threads)[1]
+        # elif pam == "TTC":
+        #     results = searcher.find_repeat_counts(target=pam, before_window=Cas3_window,
+        #                                           other_text=comparison_text, threads=threads)[0]
+        #     results_seq = searcher.find_repeat_counts(target=pam, before_window=Cas3_window,
+        #                                               other_text=comparison_text, threads=threads)[1]
         else:
             # print("pam = " + pam)
             results = searcher.find_repeat_counts(target=pam, before_window=TnpB_window,
@@ -463,8 +472,8 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
                 idx += 1
 
     # order by lowest hits, then by start position
-    print("type===========================================================",type(final_result[0]["Mix_Score"]))
-    final_result.sort(key=lambda x: (-eval(str(x["Mix_Score"])),x["all_hits"], x["start"]))
+    print("type===========================================================",final_result[:10])
+    final_result.sort(key=lambda x: (x["all_hits"], x["start"]))
 
     # for i in final_result:
     #     print(i["score"])
