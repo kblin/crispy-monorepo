@@ -491,40 +491,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
            }
         }
 
-        console.log('grna is:',grna);
-        // console.log(new_grnas,"new_grnas");
-        // if(!vm.if_tnpb){
-        // if(vm.sortbyscore){
-        //     console.log("sortbyscore");
-        //     new_grnas.sort(scoreRank);
-        //     vm.sortby0bp = false;
-        //     vm.sortby1bp = false;
-        //     vm.sortby2bp = false;
-        // }else if(vm.sortby0bp){
-        //     new_grnas.sort(sortby0bp);
-        //     vm.sortby1bp = false;
-        //     vm.sortby2bp = false;
-        //     vm.sortbyscore = false;
-        // }else if(vm.sortby1bp){
-        //     console.log("sortby1bp");
-        //     new_grnas.sort(sortby1bp);
-        //     vm.sortby0bp = false;
-        //     vm.sortby2bp = false;
-        //     vm.sortbyscore = false;
-        // }else if(vm.sortby2bp){
-        //     new_grnas.sort(sortby2bp);
-        //     vm.sortby1bp = false;
-        //     vm.sortby0bp = false;
-        //     vm.sortbyscore = false;
-        // }
-        new_grnas.sort(qualityRank);
-        console.log("log");
-        // }else{
-        //     if(vm.sortbyTnpB1bp){new_grnas.sort(sortbyTnpB1bp);}
-        //     else if(vm.sortbyTnpB2bp){new_grnas.sort(sortbyTnpB2bp)}
-        //     else if(vm.sortbyTnpB0bp){new_grnas.sort(sortbyTnpB0bp)}
-        // }
-        console.log(new_grnas.length,"length============================================================================================");
+
         // console.log(new_grnas);
         if (new_grnas.length > 1000) {
             new_grnas = new_grnas.slice(0, 1000);
