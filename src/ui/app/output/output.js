@@ -664,11 +664,11 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
 
 
 function download() {
-    // 假设 vm.displayed_grnas 是一个数组，每个元素是一个对象，表示一行数据
+    // Suppose vm.displayed_grnas is an array, and each element is an object, representing a row of data
     const data = vm.displayed_grnas;
     console.log(data[0]);
 
-    // 定义 CSV 文件的列标题
+    // Define the column headers for the CSV file
     let headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "1 bp", "2 bp", "exact match", "Score"];
     let real_headers = ["start", "end", "strand", "orf", "sequence", "pam", "1bpmm", "2bpmm", "0bpmm", "Mix_Score"];
 
@@ -689,26 +689,26 @@ function download() {
         real_headers = ["start", "end", "strand", "orf", "tam", "sequence", "1bpmm", "2bpmm", "0bpmm"];
     }
 
-    // 创建一个包含列标题的数组
+    // Create an array of column headers
     const csvRows = [headers.join(',')];
 
-    // 遍历数据，将每一行转换为 CSV 格式
+    // Iterate through the data to convert each row to CSV format
     data.forEach(row => {
         console.log("row==========", row);
 
-        // 找到 0bpmm 的索引
+        // Locate the index for 0bpmm
         const zeroBpmmIndex = real_headers.indexOf("0bpmm");
 
-        // 如果找到了 0bpmm 列
+        // If a 0bpmm column is found
         if (zeroBpmmIndex !== -1) {
-            // 将 0bpmm 的值加 1
+            // Add the value of 0bpmm by 1
             const zeroBpmmValue = row[real_headers[zeroBpmmIndex]];
             if (zeroBpmmValue !== undefined && zeroBpmmValue !== null) {
                 row[real_headers[zeroBpmmIndex]] = (parseInt(zeroBpmmValue, 10) + 1).toString();
             }
         }
 
-        // 将每一行的数据转换为 CSV 格式
+        // Convert the data for each row to CSV format
         const values = real_headers.map(header => {
             const escaped = ('' + row[header]).replace(/"/g, '\\"');
             return `"${escaped}"`;
@@ -716,21 +716,21 @@ function download() {
         csvRows.push(values.join(','));
     });
 
-    // 将 CSV 数据转换为字符串
+    // Convert CSV data to strings
     const csvString = csvRows.join('\n');
 
-    // 创建一个 Blob 对象，用于生成下载链接
+    // Create a blob object that generates a download link
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
 
-    // 创建一个下载链接
+    // Create a download link
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'grnas.csv'; // 下载文件的名称
+    link.download = 'grnas.csv'; // The name of the downloaded file
 
-    // 模拟点击下载链接
+    // Simulation: Click on the download link
     link.click();
 
-    // 释放 URL 对象
+    // Dispose of the URL object
     URL.revokeObjectURL(link.href);
 }
 
