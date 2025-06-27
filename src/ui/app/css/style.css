@@ -164,7 +164,7 @@ body {
 .superscript-icon {
     width: 14px;
     height: 14px;
-    /* 备用阴影方案 */
+    /* Alternate shadow schemes */
     box-shadow: 0 1px 1px rgba(0,0,0,0.1);
     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
