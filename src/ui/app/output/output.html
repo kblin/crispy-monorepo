@@ -107,18 +107,27 @@
         <th ng-if="output.if_tnpb">Exact match<img src="/images/trangle.svg" width="18" height="18" ng-click="output.sortbyTnpB1bp = false;output.sortbyTnpB0bp = true;output.sortbyTnpB2bp = false;updateGrnas()"/><br></th>
 
 
-<th ng-if="!output.crisi && !output.if_tnpb" style="width: 100px">    <div class="score-header">
+<th ng-if="!output.crisi && !output.if_tnpb" style="width: 150px">
+    <div class="score-header" style="display: flex; align-items: center; gap: 8px;">
         <span class="score-text">Score</span>
         <a href="/Score_rule.html" target="_blank" class="superscript-link">
-            <img src="/images/i.svg" width="14" height="14" class="superscript-icon"/>
+            <img src="images/i.svg" width="14" height="14" class="superscript-icon"/>
         </a>
-    </div><img src="/images/trangle.svg" width="18" height="18" ng-click="output.sortby1bp = false;output.sortbyscore = true;output.sortby0bp = false;output.sortby2bp = false;updateGrnas()"/></th>
-        <th ng-if="output.crisi && !output.if_tnpb"> <div class="score-header">
+        <img src="images/trangle.svg" width="18" height="18" 
+             ng-click="output.sortby1bp = false;output.sortbyscore = true;output.sortby0bp = false;output.sortby2bp = false;updateGrnas()"/>
+    </div>
+</th>
+<th ng-if="output.crisi && !output.if_tnpb" style="min-width: 150px">
+    <div class="score-header" style="display: flex; align-items: center; gap: 8px;">
         <span class="score-text">Score</span>
         <a href="/Score_rule.html" target="_blank" class="superscript-link">
-            <img src="/images/i.svg" width="14" height = "14" class="superscript-icon"/>
+            <img src="images/i.svg" width="14" height="14" class="superscript-icon"/>
         </a>
-    </div><img src="/images/trangle.svg" width="18" height="18" ng-click="output.firsttime = false;output.sortby1bp = false;output.sortbyscore = true;output.sortby0bp = false;output.sortby2bp = false;updateGrnas()"/></th>
+        <img src="images/trangle.svg" width="18" height="18" 
+             ng-click="output.firsttime = false; output.sortby1bp = false; output.sortbyscore = true; output.sortby0bp = false; output.sortby2bp = false; updateGrnas()"
+             style="cursor: pointer;"/>
+    </div>
+</th>
 
 
         <th>Download</th>
