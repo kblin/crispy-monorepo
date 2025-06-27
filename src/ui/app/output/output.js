@@ -663,42 +663,54 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
     }
 
 
-    function download() {
+function download() {
     // 假设 vm.displayed_grnas 是一个数组，每个元素是一个对象，表示一行数据
-    //     console.log("vm.displayed_grnas==========",vm.displayed_grnas)
     const data = vm.displayed_grnas;
     console.log(data[0]);
 
     // 定义 CSV 文件的列标题
-        let headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "1 bp", "2 bp", "exact match", "Score"];
-    let real_headers = ["start","end","strand","orf","sequence","pam","1bpmm","2bpmm","0bpmm","Mix_Score"];
+    let headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "1 bp", "2 bp", "exact match", "Score"];
+    let real_headers = ["start", "end", "strand", "orf", "sequence", "pam", "1bpmm", "2bpmm", "0bpmm", "Mix_Score"];
 
-        if(vm.crisi & !vm.if_tnpb){
-    console.log("this is crisi==================================================");
-     headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "1 bp", "2 bp", "exact match", "CRISPRi_Score"];
-     real_headers = ["start","end","strand","orf","sequence","pam","1bpmm","2bpmm","0bpmm","CRISPRi_score"];}
-        else if(vm.best & !vm.if_tnpb){
-
-            if(vm.mode=="CtoT") {headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "Mutations","1 bp", "2 bp", "exact match", "Score"];
-    real_headers = ["start","end","strand","orf","sequence","pam","CtoT","1bpmm","2bpmm","0bpmm","Mix_Score"];
+    if (vm.crisi && !vm.if_tnpb) {
+        console.log("this is crisi==================================================");
+        headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "1 bp", "2 bp", "exact match", "CRISPRi_Score"];
+        real_headers = ["start", "end", "strand", "orf", "sequence", "pam", "1bpmm", "2bpmm", "0bpmm", "CRISPRi_score"];
+    } else if (vm.best && !vm.if_tnpb) {
+        if (vm.mode === "CtoT") {
+            headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "Mutations", "1 bp", "2 bp", "exact match", "Score"];
+            real_headers = ["start", "end", "strand", "orf", "sequence", "pam", "CtoT", "1bpmm", "2bpmm", "0bpmm", "Mix_Score"];
+        } else if (vm.mode !== "CtoT") {
+            headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "Mutations", "1 bp", "2 bp", "exact match", "Score"];
+            real_headers = ["start", "end", "strand", "orf", "sequence", "pam", "AtoG", "1bpmm", "2bpmm", "0bpmm", "Mix_Score"];
+        }
+    } else if (vm.if_tnpb) {
+        headers = ["Start", "End", "Strand", "ORF", "PAM", "Sequence", "1 bp", "2 bp", "exact match"];
+        real_headers = ["start", "end", "strand", "orf", "tam", "sequence", "1bpmm", "2bpmm", "0bpmm"];
     }
-                        else if(vm.mode !="CtoT"){headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "Mutations","1 bp", "2 bp", "exact match", "Score"];
-                            real_headers = ["start","end","strand","orf","sequence","pam","AtoG","1bpmm","2bpmm","0bpmm","Mix_Score"];}}
-        else if(vm.if_tnpb){headers = ["Start", "End", "Strand", "ORF", "PAM", "Sequence", "1 bp", "2 bp", "exact match"];
-                            real_headers = ["start","end","strand","orf","tam","sequence","1bpmm","2bpmm","0bpmm"]}
-
 
     // 创建一个包含列标题的数组
     const csvRows = [headers.join(',')];
 
     // 遍历数据，将每一行转换为 CSV 格式
     data.forEach(row => {
+        console.log("row==========", row);
 
-        console.log("row==========",row)
+        // 找到 0bpmm 的索引
+        const zeroBpmmIndex = real_headers.indexOf("0bpmm");
+
+        // 如果找到了 0bpmm 列
+        if (zeroBpmmIndex !== -1) {
+            // 将 0bpmm 的值加 1
+            const zeroBpmmValue = row[real_headers[zeroBpmmIndex]];
+            if (zeroBpmmValue !== undefined && zeroBpmmValue !== null) {
+                row[real_headers[zeroBpmmIndex]] = (parseInt(zeroBpmmValue, 10) + 1).toString();
+            }
+        }
+
+        // 将每一行的数据转换为 CSV 格式
         const values = real_headers.map(header => {
-
             const escaped = ('' + row[header]).replace(/"/g, '\\"');
-
             return `"${escaped}"`;
         });
         csvRows.push(values.join(','));
