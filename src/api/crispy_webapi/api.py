@@ -267,93 +267,88 @@ def get_criprs(session_id):
 
 @app.route('/api/v1.0/crispr/<int:session_id>', methods=['POST'])
 def get_crispr_csv(session_id):
-    # Validate request contains required fields
-    if not request.json or 'ids' not in request.json:
-        raise BadRequest('Invalid ID field')
+    try:
+        # 1. Get the request data (keep the original authentication logic)
+        if not request.json or 'ids' not in request.json:
+            raise BadRequest('Invalid ID field')
 
-    # Get session data
-    session = get_session(session_id)
-    region = session.region
-    grnas_for_csv = []
+        # 2. Obtain parameters (compatible with the original request structure)
+        crispri_flag = request.json.get('crispri_flag', False)
+        selected_ids = request.json['ids']
+        frontend_grna_data = request.json.get('grna_data', {})  # 新增字段
 
-    # Get additional frontend-calculated data if exists
-    frontend_grna_data = request.json.get('grna_data', {})
+        # 3. Get session data (keep the original logic)
+        session = get_session(session_id)
+        region = session.region
 
-    # Process each requested gRNA ID
-    for crispy_id in request.json['ids']:
-        if crispy_id not in region['grnas']:
-            continue
+        # 4. Process the selected gRNA (keep the original logic, only add the merged CRISPRi_score part)
+        grnas_for_csv = []
+        for grna_id in selected_ids:
+            if grna_id not in region['grnas']:
+                continue
 
-        # Create a copy of the gRNA data to avoid modifying original
-        grna = region['grnas'][crispy_id].copy()
+            grna = region['grnas'][grna_id].copy()
+            grna['CRISPRi_flag'] = crispri_flag
 
-        # Merge frontend-calculated fields
-        if crispy_id in frontend_grna_data:
-            grna.update(frontend_grna_data[crispy_id])
+            # New: Merge CRISPRi_score from the frontend
+            if grna_id in frontend_grna_data:
+                grna['CRISPRi_score'] = frontend_grna_data[grna_id].get('CRISPRi_score', 'N/A')
 
-        # Ensure CRISPRi_flag exists (backward compatibility)
-        grna['CRISPRi_flag'] = grna.get('CRISPRi_flag', False)
+            grnas_for_csv.append(grna)
 
-        grnas_for_csv.append(grna)
-    print(grna['CRISPRi_flag'])
-    # Generate CSV content
-    csv_content = []
-    if grnas_for_csv:
-        # Dynamically generate headers based on available data
-        base_headers = [
-            'ID', 'Start', 'End', 'Strand', 'ORF', 'Sequence',
-            'PAM' if grnas_for_csv[0]['pam'] != 'NNN' else 'TAM',
-            'C to T mutations', 'A to G mutations',
-            '1bp mismatches', '2bp mismatches','Exact match'
-        ]
-
-        # Add CRISPRi columns if any gRNA has these fields
-        if grnas_for_csv[0]['CRISPRi_flag'] and grnas_for_csv[0]['pam'] != 'NNN':
-            base_headers.extend(['CRISPRi Score'])
-        if not grnas_for_csv[0]['CRISPRi_flag'] and grnas_for_csv[0]['pam'] != 'NNN':
-            base_headers.append('CRISPR SCORE')
-
-
-
-        csv_content.append(','.join(base_headers))
-
-        # Generate data rows
-        for grna in grnas_for_csv:
-            # Format mutation data
-            ctot = '"{}"'.format(",".join(grna.get('changed_aas', {}).get('CtoT', [])))
-            atog = '"{}"'.format(",".join(grna.get('changed_aas', {}).get('AtoG', [])))
-
-            # Base fields
-            fields = [
-                grna['id'],
-                grna['start'],
-                grna['end'],
-                grna['strand'],
-                grna['orf'],
-                grna['sequence'] if grna['pam'] != 'NNN' else grna['tnpb_Seq'],
-                grna['pam'] if grna['pam'] != 'NNN' else grna['tam'],
-                ctot,
-                atog,
-                grna['1bpmm'],
-                grna['2bpmm'],
-                grna['0bpmm']+1
+        # 5. Generate CSV (keep your logic exactly as it is)
+        csv_content = []
+        if grnas_for_csv:
+            base_headers = [
+                'ID', 'Start', 'End', 'Strand', 'ORF', 'Sequence',
+                'PAM' if grnas_for_csv[0]['pam'] != 'NNN' else 'TAM',
+                'C to T mutations', 'A to G mutations',
+                '1bp mismatches', '2bp mismatches', 'Exact match'
             ]
 
-            # Add CRISPRi fields if available
-            if grna['CRISPRi_flag']:
-                fields.extend([
-                    grna.get('CRISPRi_score', 'N/A')
-                ])
-            if not grna['CRISPRi_flag']:
-                fields.append(grna['Mix_Score'])
+            if crispri_flag and grnas_for_csv[0]['pam'] != 'NNN':
+                base_headers.append('CRISPRi Score')
+            elif not crispri_flag and grnas_for_csv[0]['pam'] != 'NNN':
+                base_headers.append('CRISPR SCORE')
 
-            csv_content.append(','.join(map(str, fields)))
+            csv_content.append(','.join(base_headers))
 
-    # Return CSV response
-    return '\n'.join(csv_content), 200, {
-        'Content-Type': 'text/csv; charset=utf-8',
-        'Content-Disposition': 'attachment; filename="crispr-results.csv"'
-    }
+            for grna in grnas_for_csv:
+                ctot = '"{}"'.format(",".join(grna.get('changed_aas', {}).get('CtoT', [])))
+                atog = '"{}"'.format(",".join(grna.get('changed_aas', {}).get('AtoG', [])))
+
+                fields = [
+                    grna['id'],
+                    grna['start'],
+                    grna['end'],
+                    grna['strand'],
+                    grna['orf'],
+                    grna['sequence'] if grna['pam'] != 'NNN' else grna.get('tnpb_Seq', ''),
+                    grna['pam'] if grna['pam'] != 'NNN' else grna.get('tam', 'NNN'),
+                    ctot,
+                    atog,
+                    grna.get('1bpmm', 0),
+                    grna.get('2bpmm', 0),
+                    grna.get('0bpmm', 0) + 1
+                ]
+
+                if crispri_flag and grna['pam'] != 'NNN':
+                    fields.append(grna.get('CRISPRi_score', 'N/A'))
+                elif not crispri_flag and grna['pam'] != 'NNN':
+                    fields.append(grna.get('Mix_Score', 'N/A'))
+
+                csv_content.append(','.join(map(str, fields)))
+
+        # 6. Return Response (Maintain Original Format)
+        return '\n'.join(csv_content), 200, {
+            'Content-Type': 'text/csv; charset=utf-8',
+            'Content-Disposition': 'attachment; filename="crispr-results.csv"'
+        }
+
+    except BadRequest as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': f'Server error: {str(e)}'}), 500
 
 
 
