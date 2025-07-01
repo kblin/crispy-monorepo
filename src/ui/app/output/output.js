@@ -72,63 +72,49 @@ app.controller('DownloadController', ['$stateParams', '$http', '$window', 'cart'
     var vm = this;
     vm.cart = cart;
     vm.download = download;
-
     vm.firstKey = Object.keys(cart.getIds())[0];  // 获取第一个 key
     vm.if_CRISi = cart.getIds()[vm.firstKey]["CRISPRi_flag"];
-    console.log(vm.if_CRISi,"=======");
-    
-    
-    
-    
+    console.log(cart.getIds(),'=======');
 
+    function download() {
+        try {
+            //  获取所有选中ID及其数据（保持原有cart.getIds()结构）
+            const selectedItems = cart.getIds();
+            const selectedIds = Object.keys(selectedItems);
 
+            // Construct the request data (keep the original payload structure and add only the necessary fields)
+            const payload = {
+                crispri_flag: vm.if_CRISi,
+                ids: selectedIds,
+                grna_data: {}  // New: Store CRISPRi_score for each gRNA
+            };
 
-function download() {
-    try {
-        // Ensure getIds() returns an array
-        const ids = cart.getIds();
-        const idArray = Array.isArray(ids) ? ids : Object.keys(ids || {});
-
-        // Prepare payload data
-        const payload = {
-            ids: idArray,
-            grna_data: {}
-        };
-
-        // Collect all additional fields to send
-        idArray.forEach(id => {
-            if (vm.grnas && vm.grnas[id]) {
+            // Add CRISPRi_score for each selected gRNA (minimal change)
+            selectedIds.forEach(id => {
                 payload.grna_data[id] = {
-                    CRISPRi_flag: vm.grnas[id].CRISPRi_flag || false,
-                    // Add other fields to pass to backend
-                    Mix_Score: vm.grnas[id].Mix_Score
+                    CRISPRi_score: selectedItems[id].CRISPRi_score
                 };
-            }
-        });
-
-        // Send request
-        $http.post('/api/v1.0/crispr/' + $stateParams.id, payload)
-            .then(response => {
-                // Create download link
-                const blob = new Blob([response.data], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = 'crispr-results.csv';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-            })
-            .catch(error => {
-                console.error('Download failed:', error);
-                alert('Download failed: ' + (error.data || error.statusText));
             });
-    } catch (error) {
-        console.error('Download processing error:', error);
-        alert('Error processing download request');
+
+            $http.post('/api/v1.0/crispr/' + $stateParams.id, payload)
+                .then(response => {
+                    const blob = new Blob([response.data], { type: 'text/csv' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'crispr-results.csv';
+                    link.click();
+                    URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error('Download failed:', error);
+                    alert('Download failed: ' + (error.data || error.statusText));
+                });
+        } catch (error) {
+            console.error('Download processing error:', error);
+            alert('Error processing download request');
+        }
     }
-}
 }]);
 
 app.controller('FancyBackController', ['$stateParams', '$state', '$http', '$window',
