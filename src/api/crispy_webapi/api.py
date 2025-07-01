@@ -106,7 +106,7 @@ def reset_session_status(session_id, new_state):
 
     return jsonify(ret)
 
-
+#submit from overview.html
 @app.route('/api/v1.0/genome/<int:session_id>', methods=['POST'])
 def start_scan(session_id):
     session = get_session(session_id)
@@ -129,24 +129,28 @@ def start_scan(session_id):
         if not 0 < request.json['best_size'] < 20:
             logging.info("bad CRISPR BEST size")
             raise BadRequest("Invalid CRISPR BEST edit window size")
-
     if not 'best_offset' in request.json:
         request.json['best_offset'] = 13
     if request.json['best_size'] != None:
         if not 0 <= request.json['best_offset'] < 20:
             logging.info("bad CRISPR BEST offset")
             raise BadRequest("Invalid CRISPR BEST edit window offset")
-
         if request.json['best_size'] + request.json['best_offset'] > 20:
             logging.info("CRISPR BEST offset and window size too large")
             raise BadRequest("CRISPR BEST offset and window size too large")
-
-
-
+    #tell if tnpB
     if request.json['flag'] == True:
         session.if_tnpb = True
     else:
         session.if_tnpb = False
+
+
+    #tell if Cas3
+    # if request.json['cas3_flag'] == True:
+    #     session.if_cas3 = True
+    # else:
+    #     session.if_cas3 = False
+
     # print("flag_______",request.json['flag'])
     # print('session_if_tnpB',session.if_tnpb)
 
@@ -212,10 +216,17 @@ def start_scan(session_id):
             # if request.json['flag'] == 'false':
             #     grna['pam'] = "TTGAT"
         region['grnas'] = new_grnas
+        #tell if tnpb 2025/05/23
         if request.json['flag'] == True:
             new_session.if_tnpb = True
         else:
             new_session.if_tnpb = False
+
+        #tell if cas3 2025/05/23
+        # if request.json['cas3_flag'] == True:
+        #     session.if_cas3 = True
+        # else:
+        #     session.if_cas3 = False
 
 
         new_session.from_coord = session.from_coord + relative_start
@@ -231,6 +242,7 @@ def start_scan(session_id):
 
 
     data = dict(uri='/api/v1.0/crispr', id=str(session_id))
+    # print("===========================",session.if_cas3)
 
 
     return jsonify(data)
@@ -253,76 +265,97 @@ def get_criprs(session_id):
 
     return jsonify(region)
 
-#download data to front-side
 @app.route('/api/v1.0/crispr/<int:session_id>', methods=['POST'])
 def get_crispr_csv(session_id):
+    # Validate request contains required fields
     if not request.json or 'ids' not in request.json:
         raise BadRequest('Invalid ID field')
 
+    # Get session data
     session = get_session(session_id)
-    # print(session)
-    # print("===========================================")
     region = session.region
-
     grnas_for_csv = []
+
+    # Get additional frontend-calculated data if exists
+    frontend_grna_data = request.json.get('grna_data', {})
+
+    # Process each requested gRNA ID
     for crispy_id in request.json['ids']:
-        if not crispy_id in region['grnas']:
+        if crispy_id not in region['grnas']:
             continue
-        grnas_for_csv.append(region['grnas'][crispy_id])
-    # print("UPLOAD_PATH 的绝对路径:", os.path.abspath(app.config['UPLOAD_PATH']))
-    #
-    # save_dir = path.join(app.config['UPLOAD_PATH'], '{:039d}'.format(session_id))
-    # print(save_dir)
-    # if not path.exists(save_dir):
-    #     os.mkdir(save_dir)
-    # csv_file = path.join(save_dir, 'output.csv')
-    # print("csv file",csv_file)
-    # print("Current working directory:", os.getcwd())
-    # with open(csv_file, 'w') as fh:
-    #
-    #     if grnas_for_csv[0]['pam'] != 'NNN':
-    #         fh.write('ID,Start,End,Strand,ORF,Sequence,PAM,C to T mutations,A to G mutations,1bp mismatches,2bp mismatches\n')
-    #     elif grnas_for_csv[0]['pam'] == 'NNN':
-    #         fh.write(
-    #             'ID,Start,End,Strand,ORF,Sequence,TAM,C to T mutations,A to G mutations,1bp mismatches,2bp mismatches\n')
-    #     for grna in grnas_for_csv:
-    #         ctot = '"{}"'.format(",".join(grna.get('changed_aas', {}).get('CtoT', [])))
-    #         atog = '"{}"'.format(",".join(grna.get('changed_aas', {}).get('AtoG', [])))
-    #         if grnas_for_csv[0]['pam'] != 'NNN':
-    #             fh.write('{id},{start},{end},{strand},{orf},{sequence},{pam},{ctot},{atog},{1bpmm},{2bpmm}\n'.format(ctot=ctot, atog=atog, **grna))
-    #         elif grnas_for_csv[0]['pam'] == 'NNN':
-    #             fh.write('{id},{start},{end},{strand},{orf},{tnpb_Seq},{tam},{ctot},{atog},{1bpmm},{2bpmm}\n'.format(
-    #                 ctot=ctot, atog=atog, **grna))
-    #
-    # BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-        # 构造 CSV 内容
+
+        # Create a copy of the gRNA data to avoid modifying original
+        grna = region['grnas'][crispy_id].copy()
+
+        # Merge frontend-calculated fields
+        if crispy_id in frontend_grna_data:
+            grna.update(frontend_grna_data[crispy_id])
+
+        # Ensure CRISPRi_flag exists (backward compatibility)
+        grna['CRISPRi_flag'] = grna.get('CRISPRi_flag', False)
+
+        grnas_for_csv.append(grna)
+    print(grna['CRISPRi_flag'])
+    # Generate CSV content
     csv_content = []
     if grnas_for_csv:
-        # 添加表头
-        if grnas_for_csv[0]['pam'] != 'NNN':
-            header = 'ID,Start,End,Strand,ORF,Sequence,PAM,C to T mutations,A to G mutations,1bp mismatches,2bp mismatches'
-        else:
-            header = 'ID,Start,End,Strand,ORF,Sequence,TAM,C to T mutations,A to G mutations,1bp mismatches,2bp mismatches'
-        csv_content.append(header)
+        # Dynamically generate headers based on available data
+        base_headers = [
+            'ID', 'Start', 'End', 'Strand', 'ORF', 'Sequence',
+            'PAM' if grnas_for_csv[0]['pam'] != 'NNN' else 'TAM',
+            'C to T mutations', 'A to G mutations',
+            '1bp mismatches', '2bp mismatches','Exact match'
+        ]
 
-        # 添加数据行
+        # Add CRISPRi columns if any gRNA has these fields
+        if grnas_for_csv[0]['CRISPRi_flag'] and grnas_for_csv[0]['pam'] != 'NNN':
+            base_headers.extend(['CRISPRi Score'])
+        if not grnas_for_csv[0]['CRISPRi_flag'] and grnas_for_csv[0]['pam'] != 'NNN':
+            base_headers.append('CRISPR SCORE')
+
+
+
+        csv_content.append(','.join(base_headers))
+
+        # Generate data rows
         for grna in grnas_for_csv:
+            # Format mutation data
             ctot = '"{}"'.format(",".join(grna.get('changed_aas', {}).get('CtoT', [])))
             atog = '"{}"'.format(",".join(grna.get('changed_aas', {}).get('AtoG', [])))
-            if grnas_for_csv[0]['pam'] != 'NNN':
-                line = f"{grna['id']},{grna['start']},{grna['end']},{grna['strand']},{grna['orf']},{grna['sequence']},{grna['pam']},{ctot},{atog},{grna['1bpmm']},{grna['2bpmm']}"
-            else:
-                line = f"{grna['id']},{grna['start']},{grna['end']},{grna['strand']},{grna['orf']},{grna['tnpb_Seq']},{grna['tam']},{ctot},{atog},{grna['1bpmm']},{grna['2bpmm']}"
-            csv_content.append(line)
 
-    # 返回 CSV 原始数据
+            # Base fields
+            fields = [
+                grna['id'],
+                grna['start'],
+                grna['end'],
+                grna['strand'],
+                grna['orf'],
+                grna['sequence'] if grna['pam'] != 'NNN' else grna['tnpb_Seq'],
+                grna['pam'] if grna['pam'] != 'NNN' else grna['tam'],
+                ctot,
+                atog,
+                grna['1bpmm'],
+                grna['2bpmm'],
+                grna['0bpmm']+1
+            ]
+
+            # Add CRISPRi fields if available
+            if grna['CRISPRi_flag']:
+                fields.extend([
+                    grna.get('CRISPRi_score', 'N/A')
+                ])
+            if not grna['CRISPRi_flag']:
+                fields.append(grna['Mix_Score'])
+
+            csv_content.append(','.join(map(str, fields)))
+
+    # Return CSV response
     return '\n'.join(csv_content), 200, {
         'Content-Type': 'text/csv; charset=utf-8',
         'Content-Disposition': 'attachment; filename="crispr-results.csv"'
     }
 
-    # return jsonify(dict(id=str(session_id), uri="/download/{:039d}/output.csv".format(session_id)))
-    # return jsonify(dict(id=str(session_id), uri="/download/test.txt"))
+
 
 @app.route('/api/v1.0/news', methods=['GET'])
 def get_news():
