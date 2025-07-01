@@ -74,47 +74,61 @@ app.controller('DownloadController', ['$stateParams', '$http', '$window', 'cart'
     vm.download = download;
 
     vm.firstKey = Object.keys(cart.getIds())[0];  // 获取第一个 key
-    vm.firstValue = cart.getIds()[vm.firstKey];
+    vm.if_CRISi = cart.getIds()[vm.firstKey]["CRISPRi_flag"];
+    console.log(vm.if_CRISi,"=======");
+    
+    
+    
+    
 
 
 
-    function download() {
+function download() {
+    try {
+        // Ensure getIds() returns an array
+        const ids = cart.getIds();
+        const idArray = Array.isArray(ids) ? ids : Object.keys(ids || {});
 
-        var id_list = Object.keys(cart.getIds());
+        // Prepare payload data
+        const payload = {
+            ids: idArray,
+            grna_data: {}
+        };
 
-        $http.post('/api/v1.0/crispr/'+$stateParams.id, {ids: id_list})
-            .then(function success(response){
-                // console.log("response.data",response.data);
-                // console.log("$stateParams.id",$stateParams.id);
-                // console.log('response',response);
-                // $window.open(response.data.uri, "_self");
-                // $window.location.href = "/root/PycharmProjects/uploads/254797663007824033610028945489267829316/output.csv";
-                const filename = 'crispr-results.csv';
+        // Collect all additional fields to send
+        idArray.forEach(id => {
+            if (vm.grnas && vm.grnas[id]) {
+                payload.grna_data[id] = {
+                    CRISPRi_flag: vm.grnas[id].CRISPRi_flag || false,
+                    // Add other fields to pass to backend
+                    Mix_Score: vm.grnas[id].Mix_Score
+                };
+            }
+        });
 
-                // 2. 创建 Blob 对象（假设后端返回的是 CSV 字符串）
-                const csvData = response.data;  // 如果后端返回的是 JSON，需在此处转换为 CSV 格式
-                const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
-
-                //3.
+        // Send request
+        $http.post('/api/v1.0/crispr/' + $stateParams.id, payload)
+            .then(response => {
+                // Create download link
+                const blob = new Blob([response.data], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
-                const url = window.URL.createObjectURL(blob);
                 link.href = url;
-                link.download = filename;
-                link.style.visibility = 'hidden';
-
-
-                // 4. 触发下载
+                link.download = 'crispr-results.csv';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                window.URL.revokeObjectURL(url); // 释放内存
-
-        }, function error(response){
-            $window.alert('Failed to contact server: ' + response.statusText);
-            console.error("请求失败:", response);
-            $window.alert('服务器错误: ' + response.statusText);
-        });
+                URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                console.error('Download failed:', error);
+                alert('Download failed: ' + (error.data || error.statusText));
+            });
+    } catch (error) {
+        console.error('Download processing error:', error);
+        alert('Error processing download request');
     }
+}
 }]);
 
 app.controller('FancyBackController', ['$stateParams', '$state', '$http', '$window',
@@ -291,6 +305,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
         for (var tick_id in vm.grnas){
 
             var grna = vm.grnas[tick_id];
+            grna.CRISPRi_flag = false;
             
 
 
@@ -358,6 +373,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             //CRISPRi ALL
             if(vm.crisi && vm.crisprimode == "ALL"){
                 var foundi = false;
+                grna.CRISPRi_flag = true;
                 for (var orf of session.orfs){
                     if(grna.orf == orf.locus_tag &&orf.strand*grna.strand < 0){
                     if(orf.strand == 1){
@@ -415,6 +431,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             }
             //CRISPRi ORF
             if(vm.crisi && vm.crisprimode == "ORF"){
+                grna.CRISPRi_flag = true;
                 var foundi = false;
                 for(var orf of session.orfs){
                 if(grna.orf == orf.locus_tag &&orf.strand*grna.strand < 0){
@@ -446,6 +463,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
                 }}
 
             if(vm.crisi && vm.crisprimode == "Hyper"){
+                grna.CRISPRi_flag = true;
                 var foundi = false;
                 for(var orf of session.orfs){
                     if(grna.orf == "-" && orf.strand == 1){
@@ -491,7 +509,40 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
            }
         }
 
-
+        console.log('grna is:',grna);
+        // console.log(new_grnas,"new_grnas");
+        // if(!vm.if_tnpb){
+        // if(vm.sortbyscore){
+        //     console.log("sortbyscore");
+        //     new_grnas.sort(scoreRank);
+        //     vm.sortby0bp = false;
+        //     vm.sortby1bp = false;
+        //     vm.sortby2bp = false;
+        // }else if(vm.sortby0bp){
+        //     new_grnas.sort(sortby0bp);
+        //     vm.sortby1bp = false;
+        //     vm.sortby2bp = false;
+        //     vm.sortbyscore = false;
+        // }else if(vm.sortby1bp){
+        //     console.log("sortby1bp");
+        //     new_grnas.sort(sortby1bp);
+        //     vm.sortby0bp = false;
+        //     vm.sortby2bp = false;
+        //     vm.sortbyscore = false;
+        // }else if(vm.sortby2bp){
+        //     new_grnas.sort(sortby2bp);
+        //     vm.sortby1bp = false;
+        //     vm.sortby0bp = false;
+        //     vm.sortbyscore = false;
+        // }
+        new_grnas.sort(qualityRank);
+        console.log("log");
+        // }else{
+        //     if(vm.sortbyTnpB1bp){new_grnas.sort(sortbyTnpB1bp);}
+        //     else if(vm.sortbyTnpB2bp){new_grnas.sort(sortbyTnpB2bp)}
+        //     else if(vm.sortbyTnpB0bp){new_grnas.sort(sortbyTnpB0bp)}
+        // }
+        console.log(new_grnas.length,"length============================================================================================");
         // console.log(new_grnas);
         if (new_grnas.length > 1000) {
             new_grnas = new_grnas.slice(0, 1000);
@@ -521,7 +572,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             vm.sortby0bp = false;
             vm.sortbyscore = false;
         }
-        new_grnas.sort(qualityRank);
+        
         console.log("log");
         }else{
             if(vm.sortbyTnpB1bp){new_grnas.sort(sortbyTnpB1bp);}
@@ -664,11 +715,11 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
 
 
 function download() {
-    // Suppose vm.displayed_grnas is an array, and each element is an object, representing a row of data
+    // 假设 vm.displayed_grnas 是一个数组，每个元素是一个对象，表示一行数据
     const data = vm.displayed_grnas;
     console.log(data[0]);
 
-    // Define the column headers for the CSV file
+    // 定义 CSV 文件的列标题
     let headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "1 bp", "2 bp", "exact match", "Score"];
     let real_headers = ["start", "end", "strand", "orf", "sequence", "pam", "1bpmm", "2bpmm", "0bpmm", "Mix_Score"];
 
@@ -689,26 +740,26 @@ function download() {
         real_headers = ["start", "end", "strand", "orf", "tam", "sequence", "1bpmm", "2bpmm", "0bpmm"];
     }
 
-    // Create an array of column headers
+    // 创建一个包含列标题的数组
     const csvRows = [headers.join(',')];
 
-    // Iterate through the data to convert each row to CSV format
+    // 遍历数据，将每一行转换为 CSV 格式
     data.forEach(row => {
         console.log("row==========", row);
 
-        // Locate the index for 0bpmm
+        // 找到 0bpmm 的索引
         const zeroBpmmIndex = real_headers.indexOf("0bpmm");
 
-        // If a 0bpmm column is found
+        // 如果找到了 0bpmm 列
         if (zeroBpmmIndex !== -1) {
-            // Add the value of 0bpmm by 1
+            // 将 0bpmm 的值加 1
             const zeroBpmmValue = row[real_headers[zeroBpmmIndex]];
             if (zeroBpmmValue !== undefined && zeroBpmmValue !== null) {
                 row[real_headers[zeroBpmmIndex]] = (parseInt(zeroBpmmValue, 10) + 1).toString();
             }
         }
 
-        // Convert the data for each row to CSV format
+        // 将每一行的数据转换为 CSV 格式
         const values = real_headers.map(header => {
             const escaped = ('' + row[header]).replace(/"/g, '\\"');
             return `"${escaped}"`;
@@ -716,21 +767,21 @@ function download() {
         csvRows.push(values.join(','));
     });
 
-    // Convert CSV data to strings
+    // 将 CSV 数据转换为字符串
     const csvString = csvRows.join('\n');
 
-    // Create a blob object that generates a download link
+    // 创建一个 Blob 对象，用于生成下载链接
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
 
-    // Create a download link
+    // 创建一个下载链接
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'grnas.csv'; // The name of the downloaded file
+    link.download = 'grnas.csv'; // 下载文件的名称
 
-    // Simulation: Click on the download link
+    // 模拟点击下载链接
     link.click();
 
-    // Dispose of the URL object
+    // 释放 URL 对象
     URL.revokeObjectURL(link.href);
 }
 
