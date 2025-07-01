@@ -168,7 +168,7 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
              "CRISPR_BAD_GC": 300,
              "FOLDING": 1}
 
-    SINGLE_OFFTARGET_SCORE = [0, 0.6, 0.8]
+    SINGLE_OFFTARGET_SCORE = [0, 0.3, 0.4]
     GC_LOW = 40
     GC_HIGH = 70
 
