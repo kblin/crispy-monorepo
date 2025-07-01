@@ -18,7 +18,8 @@
       <th ng-if="dl.firstValue.pam == 'NNN'">TAM</th>
       <th>C to T mutations</th>
       <th>A to G mutations</th>
-      <th ng-if="dl.firstValue.pam != 'NNN'">sgRNA score</th>
+      <th ng-if="dl.firstValue.pam != 'NNN' && !dl.if_CRISi">CRISPR score</th>
+      <th ng-if="dl.firstValue.pam != 'NNN' && dl.if_CRISi">CRISPRi score</th>
 <!--      <th>test</th>-->
 
       <!--<th>0bp mismatches</th>-->
@@ -39,7 +40,8 @@
       <td style="font-family:monospace" ng-if="dl.firstValue.pam == 'NNN'">{{rna.tam}}</td>
       <td style="font-family:monospace">{{rna.changed_aas.CtoT.join(", ")}}</td>
       <td style="font-family:monospace">{{rna.changed_aas.AtoG.join(", ")}}</td>
-      <td ng-if="dl.firstValue.pam != 'NNN'">{{rna['Mix_Score']}}</td>
+      <td ng-if="dl.firstValue.pam != 'NNN'&& !dl.if_CRISi">{{rna['Mix_Score']}}</td>
+      <td ng-if="dl.firstValue.pam != 'NNN'&& dl.if_CRISi">{{rna['CRISPRi_score']}}</td>
 <!--      <td>{{dl.firstValue.pam}}</td>-->
 
       <!--<td>{{rna['1bpmm']}}</td>-->
