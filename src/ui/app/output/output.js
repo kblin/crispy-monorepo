@@ -8,7 +8,7 @@ var app = angular.module('crispy.output', [
 ]);
 
 app.factory('Crispr', ['$resource', function($resource) {
-    return $resource('/crispy/api/v1.0/crispr/:id', {id: '@id'});
+    return $resource('/api/v1.0/crispr/:id', {id: '@id'});
 }]);
 
 app.service('cart', function Cart() {
@@ -96,7 +96,7 @@ app.controller('DownloadController', ['$stateParams', '$http', '$window', 'cart'
                 };
             });
 
-            $http.post('/crispy/api/v1.0/crispr/' + $stateParams.id, payload)
+            $http.post('/api/v1.0/crispr/' + $stateParams.id, payload)
                 .then(response => {
                     const blob = new Blob([response.data], { type: 'text/csv' });
                     const url = URL.createObjectURL(blob);
@@ -124,7 +124,7 @@ app.controller('FancyBackController', ['$stateParams', '$state', '$http', '$wind
 
 
     function back() {
-        $http.get('/crispy/api/v1.0/crispr/'+$stateParams.id)
+        $http.get('/api/v1.0/crispr/'+$stateParams.id)
             .then(function (response) {
                 var session = response.data;
                 if (session.derived) {
@@ -133,7 +133,7 @@ app.controller('FancyBackController', ['$stateParams', '$state', '$http', '$wind
 
                     return;
                 }
-                $http.put('/crispy/api/v1.0/genome/' + $stateParams.id + '/loaded')
+                $http.put('/api/v1.0/genome/' + $stateParams.id + '/loaded')
                     .then(function (response){
                         $state.go('overview', {id: $stateParams.id});
                         $window.location.reload();
@@ -689,7 +689,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             $window.history.back();
             return;
         }
-        $http.put('/crispy/api/v1.0/genome/' + $stateParams.id + '/loaded')
+        $http.put('/api/v1.0/genome/' + $stateParams.id + '/loaded')
             .then(function susscess(response){
                 $state.go('overview', {id: $stateParams.id});
         }, handleError);
