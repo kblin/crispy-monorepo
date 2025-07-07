@@ -8,7 +8,7 @@ var app = angular.module('crispy.output', [
 ]);
 
 app.factory('Crispr', ['$resource', function($resource) {
-    return $resource('/api/v1.0/crispr/:id', {id: '@id'});
+    return $resource('/crispy/api/v1.0/crispr/:id', {id: '@id'});
 }]);
 
 app.service('cart', function Cart() {
@@ -96,7 +96,7 @@ app.controller('DownloadController', ['$stateParams', '$http', '$window', 'cart'
                 };
             });
 
-            $http.post('/api/v1.0/crispr/' + $stateParams.id, payload)
+            $http.post('/crispy/api/v1.0/crispr/' + $stateParams.id, payload)
                 .then(response => {
                     const blob = new Blob([response.data], { type: 'text/csv' });
                     const url = URL.createObjectURL(blob);
@@ -124,7 +124,7 @@ app.controller('FancyBackController', ['$stateParams', '$state', '$http', '$wind
 
 
     function back() {
-        $http.get('/api/v1.0/crispr/'+$stateParams.id)
+        $http.get('/crispy/api/v1.0/crispr/'+$stateParams.id)
             .then(function (response) {
                 var session = response.data;
                 if (session.derived) {
@@ -133,7 +133,7 @@ app.controller('FancyBackController', ['$stateParams', '$state', '$http', '$wind
 
                     return;
                 }
-                $http.put('/api/v1.0/genome/' + $stateParams.id + '/loaded')
+                $http.put('/crispy/api/v1.0/genome/' + $stateParams.id + '/loaded')
                     .then(function (response){
                         $state.go('overview', {id: $stateParams.id});
                         $window.location.reload();
@@ -689,7 +689,7 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
             $window.history.back();
             return;
         }
-        $http.put('/api/v1.0/genome/' + $stateParams.id + '/loaded')
+        $http.put('/crispy/api/v1.0/genome/' + $stateParams.id + '/loaded')
             .then(function susscess(response){
                 $state.go('overview', {id: $stateParams.id});
         }, handleError);
@@ -701,11 +701,11 @@ app.controller('OutputController', ['$scope', '$state', '$stateParams', '$http',
 
 
 function download() {
-    // 假设 vm.displayed_grnas 是一个数组，每个元素是一个对象，表示一行数据
+    // Assuming vm.displayed_grnas is an array where each element is an object representing a row of data.
     const data = vm.displayed_grnas;
     console.log(data[0]);
 
-    // 定义 CSV 文件的列标题
+    // Define the column headers of the CSV file
     let headers = ["Start", "End", "Strand", "ORF", "Sequence", "PAM", "1 bp", "2 bp", "exact match", "Score"];
     let real_headers = ["start", "end", "strand", "orf", "sequence", "pam", "1bpmm", "2bpmm", "0bpmm", "Mix_Score"];
 
@@ -726,26 +726,26 @@ function download() {
         real_headers = ["start", "end", "strand", "orf", "tam", "sequence", "1bpmm", "2bpmm", "0bpmm"];
     }
 
-    // 创建一个包含列标题的数组
+    // Create an array that includes column headers
     const csvRows = [headers.join(',')];
 
-    // 遍历数据，将每一行转换为 CSV 格式
+    // Traverse the data and convert each row to CSV format.
     data.forEach(row => {
         console.log("row==========", row);
 
-        // 找到 0bpmm 的索引
+        // Find the index of 0bpmm
         const zeroBpmmIndex = real_headers.indexOf("0bpmm");
 
-        // 如果找到了 0bpmm 列
+        // If 0bpmm column is found
         if (zeroBpmmIndex !== -1) {
-            // 将 0bpmm 的值加 1
+            // Add 1 to the value of 0bpmm.
             const zeroBpmmValue = row[real_headers[zeroBpmmIndex]];
             if (zeroBpmmValue !== undefined && zeroBpmmValue !== null) {
                 row[real_headers[zeroBpmmIndex]] = (parseInt(zeroBpmmValue, 10) + 1).toString();
             }
         }
 
-        // 将每一行的数据转换为 CSV 格式
+        //Convert the data of each row into CSV format.
         const values = real_headers.map(header => {
             const escaped = ('' + row[header]).replace(/"/g, '\\"');
             return `"${escaped}"`;
@@ -753,21 +753,21 @@ function download() {
         csvRows.push(values.join(','));
     });
 
-    // 将 CSV 数据转换为字符串
+    // Convert CSV data to a string
     const csvString = csvRows.join('\n');
 
-    // 创建一个 Blob 对象，用于生成下载链接
+    // Create a Blob object to generate a download link.
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
 
-    // 创建一个下载链接
+    // Create a download link
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'grnas.csv'; // 下载文件的名称
+    link.download = 'grnas.csv'; 
 
-    // 模拟点击下载链接
+    
     link.click();
 
-    // 释放 URL 对象
+    
     URL.revokeObjectURL(link.href);
 }
 
