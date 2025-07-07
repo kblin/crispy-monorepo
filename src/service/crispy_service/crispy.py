@@ -15,7 +15,7 @@ def find_position_differences(seq1, seq2):
 
     for i in range(len(seq1)):
         if seq1[i] != seq2[i]:
-            differences.append([i, seq1[i] + seq2[i]])  # (索引, seq1中的字符, seq2中的字符)
+            differences.append([i, seq1[i] + seq2[i]])  
 
     return differences
 
