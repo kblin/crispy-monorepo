@@ -1,0 +1,19 @@
+[project]
+name = "crispy3"
+version = "3.0.0"
+description = "A monorepo containing all of the CRISPy-web packages"
+authors = [
+    {name = "Kai Blin", email = "kblin@dtu.dk"},
+]
+dependencies = []
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "AGPL"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
