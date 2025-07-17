@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" ng-app="crispy">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>CRISPy-web</title>
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#/input">CRISPy-web</a>
+      </div>
+      <form class="navbar-form navbar-left" ui-view="goback"></form>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#/help">help</a></li>
+        <li><a href="#/about">about</a></li>
+
+
+      </ul>
+      <form class="navbar-form navbar-right" ui-view="shopping"></form>
+    </div>
+  </nav>
+
+  <div ui-view='main'></div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="dtu-logo col-sm-2">
+        <a href="http://www.dtu.dk/"><img src="images/dtu_logo.svg"></a>
+      </div>
+      <div class="footer-text col-sm-8">
+        Please cite: Blin, Pedersen, Weber &amp; Lee; Synthetic and Systems Biotechnology 2016 <i><a href="http://www.sciencedirect.com/science/article/pii/S2405805X15300168">doi:10.1016/j.synbio.2016.01.003</a></i>
+      </div>
+      <div class="cfb-logo col-sm-2">
+        <a href="http://www.biosustain.dtu.dk"><img src="images/cfb_logo.svg" height="60px"></a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="components/jquery/dist/jquery.min.js"></script>
+  <script src="components/angular/angular.min.js"></script>
+  <script src="components/angular-resource/angular-resource.min.js"></script>
+  <script src="components/angular-ui-router/release/angular-ui-router.min.js"></script>
+  <script src="components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+  <script src="components/ng-file-upload/ng-file-upload.min.js"></script>
+  <script src="components/d3/d3.min.js"></script>
+  <script src="d3fronthack.js"></script>
+  <script src="svgene.js"></script>
+  <script src="input/input.js"></script>
+  <script src="overview/overview.js"></script>
+  <script src="output/output.js"></script>
+
+  <script src="app.js"></script>
+  <script type="text/javascript">
+$(document).ready(function () {
+});
+  </script>
+</body>
+</html>
+

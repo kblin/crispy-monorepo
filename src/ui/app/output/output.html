@@ -1,0 +1,170 @@
+<div class="container" ng-controller="OutputController as output">
+  <div ng-show="output.session.state == 'scanning'">
+    Please wait, {{output.session.state}}. This can take several minutes. <img src="images/loading.gif" /><br>
+    Last updated: {{output.session.last_updated}}
+  </div>
+  <div ng-show="output.session.state == 'error'">
+    An error happened during your analysis: <span class="text-danger">{{output.session.error}}</span><br>
+    Please check if your input sequence is valid. If you think this is an error on the CRISPy-web side,
+    please contact <a href="mailto:kblin@biosustain.dtu.dk">Kai Blin</a><br>
+    Last updated: {{output.session.last_updated}}
+  </div>
+  <div ng-show="output.session.state == 'done'">
+    <h4>Region: {{output.session.name}} ({{output.session.from}} - {{output.session.to}})</h4>
+    <div id="cluster"></div>
+  </div>
+  <div ng-show="output.session.state == 'done'">
+    <div ng-hide="output.displayed_grnas.length > 0">
+      No results found. <a ng-click="backToOverview()">Go back to overview</a> and change the search area.
+    </div>
+    <div ng-show="output.updating_display">
+      Updating displayed gRNAs, please wait.
+    </div>
+    <button class="btn btn-primary" type="button" id="show-best" ng-model="output.best"
+      btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false" ng-change="updateGrnas()" ng-disabled="output.crisi" ng-if="!output.if_tnpb" >
+      <i ng-if="!output.best" class="fa fa-square-o"></i>
+      <i ng-if="output.best" class="fa fa-check-square-o"></i>
+      CRISPR-BEST mode</button>
+    <button class="btn btn-primary" type="button" id="show-tnpb-best" ng-model="output.best"
+      btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false" ng-change="updateGrnas()" ng-disabled="output.crisi" ng-if="output.if_tnpb">
+      <i ng-if="!output.best" class="fa fa-square-o"></i>
+      <i ng-if="output.best" class="fa fa-check-square-o"></i>
+      TnpB-BEST mode</button>
+    <!--2024/10/04 update start-->
+    <button class="btn btn-primary" type="button" id="show-crispr-i" ng-model="output.crisi"
+      btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false" ng-change="updateGrnas()" ng-click="output.crisi === false && (output.selectedORF = 'All')" ng-disabled="output.best" ng-if="!output.if_tnpb" >
+      <i ng-if="!output.crisi" class="fa fa-square-o"></i>
+      <i ng-if="output.crisi" class="fa fa-check-square-o"></i>
+      CRISPRi mode</button>
+    <button class="btn btn-primary" type="button" id="show-tnpb-i" ng-model="output.crisi"
+      btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false" ng-change="updateGrnas()" ng-click="output.crisi === false && (output.selectedORF = 'All')" ng-disabled="output.best" ng-if="output.if_tnpb">
+      <i ng-if="!output.crisi" class="fa fa-square-o"></i>
+      <i ng-if="output.crisi" class="fa fa-check-square-o"></i>
+      TnpBi mode</button>
+    <!--2024/10/04 update end-->
+
+      <button ng-if="output.best" class="btn btn-default" ng-click="output.mode = (output.mode === 'CtoT' ? 'ALL' : 'CtoT'); output.selectedORF = 'All';updateGrnas()" style="z-index: 0; pointer-events: auto;">
+        <i ng-if="output.mode == 'ALL'" class="fa fa-square-o"></i>
+        <i ng-if="output.mode == 'CtoT'" class="fa fa-check-square-o"></i>
+        C to T</button>
+
+    <button ng-if="output.best" class="btn btn-default" ng-click="output.mode = (output.mode === 'AtoG' ? 'ALL' : 'AtoG'); output.selectedORF = 'All';updateGrnas()" style="z-index: 0; pointer-events: auto;">
+        <i ng-if="output.mode == 'ALL'" class="fa fa-square-o"></i>
+        <i ng-if="output.mode == 'AtoG'" class="fa fa-check-square-o"></i>
+        A to G</button>
+
+
+
+      <button ng-if="output.crisi" class="btn btn-default" ng-click="output.crisprimode = (output.crisprimode === 'ORF' ? 'ALL' : 'ORF'); output.selectedORF = 'All';updateGrnas()" style="z-index: 0; pointer-events: auto;">
+        <i ng-if="output.crisprimode == 'ALL'" class="fa fa-square-o"></i>
+        <i ng-if="output.crisprimode == 'ORF'" class="fa fa-check-square-o"></i>
+        ORF</button>
+      <button ng-if="output.crisi" class="btn btn-default"   ng-click="output.crisprimode = (output.crisprimode === 'Hyper' ? 'ALL' : 'Hyper'); output.selectedORF = 'All';updateGrnas()" style="z-index: 0;pointer-events: auto;">
+        <i ng-if="output.crisprimode == 'ALL'" class="fa fa-square-o"></i>
+        <i ng-if="output.crisprimode == 'Hyper'" class="fa fa-check-square-o"></i>
+        5'UTR</button>
+
+    <button type="button" class="btn btn-default" ng-if="output.best && output.mode == 'CtoT'" ng-model="output.stops_only"
+      ng-change="updateGrnas()" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+      <i ng-if="!output.stops_only" class="fa fa-square-o"></i>
+      <i ng-if="output.stops_only" class="fa fa-check-square-o"></i>
+      Show only STOP mutations
+    </button>
+    <button class="btn btn-primary" ng-click="download()"><i class="fa fa-download"></i> Download spacers shown in this page</button>
+    <table class="table table-striped table-hover" ng-show="output.displayed_grnas.length > 0">
+      <thead>
+      <tr>
+        <th colspan="6"></th>
+<!--        <th ng-if="output.best">CRISPR-BEST</th>-->
+        <th ng-if="output.best"></th>
+        <th colspan="4">OT (off target)</th>
+      </tr>
+      <tr>
+        <th class="text-right">Start</th>
+        <th class="text-right">End</th>
+        <th class="text-right">Strand</th>
+        <th ng-if="output.crisprimode != 'Hyper'" style="width: 200px;">ORF
+          <select ng-model="output.selectedORF" ng-change="updateGrnas()" style=" background-color: #000000; border-radius: 5px; /* 圆角 */;border: 1px solid #000000;">
+            <option value="All" style=" color: #003366;">All</option>
+            <option ng-repeat="orf in output.uniqueORFs" value="{{orf}}">{{orf}}</option>
+          </select>
+        </th>
+        <th ng-if="output.crisprimode == 'Hyper'" style="width: 200px;">5'UTR</th>
+        <th ng-if="output.if_tnpb">TAM</th>
+        <th ng-if="!output.if_tnpb">Sequence</th>
+        <th ng-if="output.if_tnpb">Sequence</th>
+        <th ng-if="!output.if_tnpb">PAM</th>
+
+        <th ng-if="output.best">Mutations</th>
+<!--        <th>0 bp</th>-->
+        <th ng-if="!output.if_tnpb">1 bp<img src="images/trangle.svg" width="18" height="18" ng-click="output.sortby1bp = true;output.sortbyscore = false;output.sortby0bp = false;output.sortby2bp = false;updateGrnas()"/><br></th>
+        <th ng-if="!output.if_tnpb">2 bp<img src="images/trangle.svg" width="18" height="18" ng-click="output.sortby1bp = false;output.sortbyscore = false;output.sortby0bp = false;output.sortby2bp = true;updateGrnas()"/><br></th>
+        <th ng-if="!output.if_tnpb">Exact match<img src="images/trangle.svg" width="18" height="18" ng-click="output.sortby1bp = false;output.sortbyscore = false;output.sortby0bp = true;output.sortby2bp = false;updateGrnas()"/><br></th>
+
+
+        <th ng-if="output.if_tnpb">1 bp<img src="images/trangle.svg" width="18" height="18" ng-click="output.sortbyTnpB1bp = true;output.sortbyTnpB0bp = false;output.sortbyTnpB2bp = false;updateGrnas()"/><br></th>
+        <th ng-if="output.if_tnpb">2 bp<img src="images/trangle.svg" width="18" height="18" ng-click="output.sortbyTnpB1bp = false;output.sortbyTnpB0bp = false;output.sortbyTnpB2bp = true;updateGrnas()"/><br></th>
+        <th ng-if="output.if_tnpb">Exact match<img src="images/trangle.svg" width="18" height="18" ng-click="output.sortbyTnpB1bp = false;output.sortbyTnpB0bp = true;output.sortbyTnpB2bp = false;updateGrnas()"/><br></th>
+
+
+<th ng-if="!output.crisi && !output.if_tnpb" style="width: 150px">
+    <div class="score-header" style="display: flex; align-items: center; gap: 8px;">
+        <span class="score-text">Score</span>
+        <a href="Score_rule.html" target="_blank" class="superscript-link">
+            <img src="images/i.svg" width="14" height="14" class="superscript-icon"/>
+        </a>
+        <img src="images/trangle.svg" width="18" height="18" 
+             ng-click="output.sortby1bp = false;output.sortbyscore = true;output.sortby0bp = false;output.sortby2bp = false;updateGrnas()"/>
+    </div>
+</th>
+<th ng-if="output.crisi && !output.if_tnpb" style="min-width: 150px">
+    <div class="score-header" style="display: flex; align-items: center; gap: 8px;">
+        <span class="score-text">Score</span>
+        <a href="Score_rule.html" target="_blank" class="superscript-link">
+            <img src="images/i.svg" width="14" height="14" class="superscript-icon"/>
+        </a>
+        <img src="images/trangle.svg" width="18" height="18" 
+             ng-click="output.firsttime = false; output.sortby1bp = false; output.sortbyscore = true; output.sortby0bp = false; output.sortby2bp = false; updateGrnas()"
+             style="cursor: pointer;"/>
+    </div>
+</th>
+
+
+        <th>Download</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="rna in output.displayed_grnas" class="svgene-row"
+          ng-attr-id="{{rna.id}}-row" ng-click="forDownload(rna.id)"
+          ng-class="{selected: output.cart.has(rna.id)}">
+        <td class="text-right">{{rna.start}}</td>
+        <td class="text-right">{{rna.end}}</td>
+        <td class="text-right">{{rna.strand}}</td>
+        <td ng-if="output.crisprimode != 'Hyper'" style="width: 200px;">{{rna.orf}}</td>
+        <td ng-if="output.crisprimode == 'Hyper'" style="width: 200px;">{{rna.Hyper}}</td>
+        <td ng-if="output.if_tnpb" style="font-family:monospace">{{rna.tam}}</td>
+        <td ng-if="!output.if_tnpb" style="font-family:monospace">{{rna.sequence}}</td>
+        <td ng-if="output.if_tnpb" style="font-family:monospace">{{rna.tnpb_Seq}}</td>
+        <td ng-if="!output.if_tnpb" style="font-family:monospace">{{rna.pam}}</td>
+        <td ng-if="output.best">{{rna.changed_aas[output.mode].join(", ")}}</td>
+<!--        <td>{{rna['0bpmm']}}</td>-->
+        <td>{{rna['1bpmm']}}</td>
+        <td>{{rna['2bpmm']}}</td>
+        <td>{{rna['0bpmm']+1}}</td>
+        <td ng-if="!output.crisi && !output.if_tnpb" class="text-end">{{rna['Mix_Score']}}</td>
+
+        <td ng-if="output.crisi && !output.if_tnpb" class="text-end">{{rna['CRISPRi_score']}}</td>
+        <td>
+          <span ng-show="output.cart.has(rna.id)">
+            <i class="fa fa-trash fa-lg"></i>
+          </span>
+          <span ng-hide="output.cart.has(rna.id)">
+            <i class="fa fa-shopping-cart fa-lg"></i>
+          </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+</div>
+
+</div>

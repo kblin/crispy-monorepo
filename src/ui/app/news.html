@@ -1,0 +1,46 @@
+<div class="container">
+  <h3>News</h3>
+  <div class="panel panel-default">
+    <div class="panel-heading"><span class="news-date">2016-10-17</span><span class="news-heading">Version 1.1.1 of CRISPy-web released.</span></div>
+    <div class="panel-body">
+      We just released version 1.1.1 of CRISPy-web, that fixes the job queue getting stuck occasionally.
+      <h4>Highlights</h4>
+      <ul>
+        <li>
+          <strong>Job queue no longer gets stuck.</strong><br>
+          Due to an unexpected interaction between the pypy interpreter
+          and our Redis-based job queue, we would occasionally see jobs
+          getting stuck in "running" state forever. We fixed the code to
+          avoid this particular error mode.
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading"><span class="news-date">2016-05-02</span><span class="news-heading">Version 1.1.0 of CRISPy-web released.</span></div>
+    <div class="panel-body">
+      We just released version 1.1.0 of CRISPy-web with some bug fixes and improvements based on user feedback.
+      <h4>Highlights</h4>
+      <ul>
+        <li>
+          <strong>All results are being shown.</strong><br>
+          The previous version did a stricter filtering for sgRNA quality. This
+          turned out to limit the usefullness in some use cases. We now
+          always show all results, sorted from least to most off-target hits.
+        </li>
+        <li>
+          <strong>Easier to localise sgRNAs.</strong><br>
+          For sgRNAs that are located within an annotated ORF, the identifier
+          of the ORF is now also shown. This should make it easier to keep track
+          of which sgRNA belongs to which ORF.
+        </li>
+        <li>
+          <strong>More robust sequence parser.</strong><br>
+          Previously, CRISPy-web would sometimes crash when certain invalid
+          sequence files were uploaded, sometimes causing outages for all
+          CRISPy-web users. The new version should be much more robust to this,
+          improving the overall user experience.
+      </ul>
+    </div>
+  </div>
+</div>

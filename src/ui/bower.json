@@ -1,0 +1,16 @@
+{
+  "name": "crispy-ui",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A web UI for the CRISPR/Cas9 guide RNA predictor CRISPy",
+  "dependencies": {
+    "angular": "~1.4.6",
+    "angular-bootstrap": "~0.13.4",
+    "angular-resource": "~1.4.6",
+    "angular-ui-router": "~0.2.15",
+    "d3": "~3.5.6",
+    "font-awesome": "fontawesome#~4.4.0",
+    "jquery": "~2.1.4",
+    "ng-file-upload": "~8.0.5"
+  }
+}

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<!doctype html>
+<html lang="en" ng-app="crispy">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>CRISPy-web</title>
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#/input">CRISPy-web</a>
+      </div>
+      <form class="navbar-form navbar-left" ui-view="goback"></form>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#/help">help</a></li>
+        <li><a href="#/about">about</a></li>
+<!--        <li><a ui-sref="PE">PE</a></li>-->
+
+      </ul>
+      <form class="navbar-form navbar-right" ui-view="shopping"></form>
+    </div>
+  </nav>
+
+  <div ui-view='main'>
+    <h1><strong>CRISPy-web 3.0 Scoring System</strong></h1>
+    <h2><strong>1. Off-Target Effect Scoring (CRISPR/Cas9 Mode)</strong></h2>
+    <p style="font-size: 22px;">Off-target potential is evaluated according to the systematic scoring matrix <sup>1</sup>. For each possible
+      mismatch between the 13 bp non-seed region of the sgRNA and the genomic DNA, the
+      algorithm assigns a context-dependent penalty score reflecting the nucleotide change and its
+      position. Larger scores indicate a lesser impact on editing efficiency. When two or more off-
+      target sites are detected, the algorithm incorporates a distance-based penalty (combine_eff) that
+      adjusts the overall efficiency according to the distance between off-target loci, as shorter
+      distances are more detrimental to editing fidelity.
+    </p>
+    <h2><strong>2. sgRNA Intrinsic Efficiency Scoring</strong></h2>
+    <p style="font-size: 22px;">The intrinsic activity of each sgRNA is calculated by aggregating position-specific and dinucleotide
+      features identified in several foundational studies <sup>2-4</sup>.
+      At each nucleotide position of the 20 bp sgRNA, empirically determined efficiency contributions are summed to produce a preliminary activity score.
+    </p>
+    <h2><strong>3. Comprehensive Scoring</strong></h2>
+    <p style="font-size: 22px;">
+      To obtain a final comprehensive score, the intrinsic efficiency score is adjusted by subtracting the cumulative off-target effect penalty.
+      The result is normalized via a sigmoid transformation:<br>
+      <strong style="font-size: 26px;">score = 1 / (1 + exp(–raw_score))</strong>
+      <br>
+      as proposed in the CHOPCHOP v3, ensuring all scores are mapped between 0 and 1 for intuitive interpretation.
+    </p>
+      <h2><strong>4. CRISPRi Mode</strong></h2>
+    <p style="font-size: 22px;">
+      For CRISPR interference, the scoring system uses a position-weighted matrix <sup>2</sup>. Each of the 20 nucleotides in the sgRNA is assigned a positional activity value;
+      these are summed, and the aggregate is normalized via the same sigmoid function as above to yield the final CRISPRi guide score.
+    </p>
+    <h2><strong>References</strong></h2>
+    <p style="font-size: 22px;">
+      1	Fu, R. J. et al. Systematic decomposition of sequence determinants governing CRISPR/Cas9 specificity. Nat. Commun. 13 (2022). <a href="https://doi.org/10.1038/s41467-022-28028-x">https://doi.org/10.1038/s41467-022-28028-x</a><br>
+2	Xu, H. et al. Sequence determinants of improved CRISPR sgRNA design. Genome Res. 25, 1147-1157 (2015). <a href="https://doi.org/10.1101/gr.191452.115">https://doi.org/10.1101/gr.191452.115</a> <br>
+3	Doench, J. G. et al. Rational design of highly active sgRNAs for CRISPR-Cas9-mediated gene inactivation. Nat. Biotechnol. 32, 1262-U1130 (2014). <a href="https://doi.org/10.1038/nbt.3026">https://doi.org/10.1038/nbt.3026</a> <br>
+4	Labun, K. et al. CHOPCHOP v3: expanding the CRISPR web toolbox beyond genome editing. Nucleic Acids Res. 47, W171-W174 (2019). <a href="https://doi.org/10.1093/nar/gkz365">https://doi.org/10.1093/nar/gkz365</a>
+
+
+    </p>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="dtu-logo col-sm-2">
+        <a href="http://www.dtu.dk/"><img src="images/dtu_logo.svg"></a>
+      </div>
+      <div class="footer-text col-sm-8">
+        Please cite: Blin, Pedersen, Weber &amp; Lee; Synthetic and Systems Biotechnology 2016 <i><a href="http://www.sciencedirect.com/science/article/pii/S2405805X15300168">doi:10.1016/j.synbio.2016.01.003</a></i>
+      </div>
+      <div class="cfb-logo col-sm-2">
+        <a href="http://www.biosustain.dtu.dk"><img src="images/cfb_logo.svg" height="60px"></a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="components/jquery/dist/jquery.min.js"></script>
+  <script src="components/angular/angular.min.js"></script>
+  <script src="components/angular-resource/angular-resource.min.js"></script>
+  <script src="components/angular-ui-router/release/angular-ui-router.min.js"></script>
+  <script src="components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+  <script src="components/ng-file-upload/ng-file-upload.min.js"></script>
+  <script src="components/d3/d3.min.js"></script>
+  <script src="d3fronthack.js"></script>
+  <script src="svgene.js"></script>
+<!--  <script src="input/input.js"></script>-->
+<!--  <script src="overview/overview.js"></script>-->
+<!--  <script src="output/output.js"></script>-->
+  <script src="PE/PE.js"></script>
+  <script src="app.js"></script>
+  <script type="text/javascript">
+$(document).ready(function () {
+});
+  </script>
+</body>
+</html>

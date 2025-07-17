@@ -1,0 +1,14 @@
+{
+  "name": "crispy-ui",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A web UI for the CRISPR/Cas9 guide RNA predictor CRISPy",
+  "devDependencies": {
+    "bower": "^1.8.8",
+    "eslint": "^4.10.0",
+    "http-server": "^0.8.4"
+  },
+  "scripts": {
+    "start": "http-server -a 127.0.0.1 -p 8000 -P http://127.0.0.1:5555 app"
+  }
+}

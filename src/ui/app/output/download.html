@@ -1,0 +1,53 @@
+<div class="container row">
+  <div class="col-sm-3 col-sm-offset9">
+    <button class="btn btn-primary" ng-click="dl.download()"><i class="fa fa-download"></i> Download CSV file</button>
+  </div>
+</div>
+<div class="spacer" style="margin-top: 1em; margin-bottom: 1em;"></div>
+<div class="container">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th class="text-right">Start</th>
+      <th class="text-right">End</th>
+      <th class="text-right">Strand</th>
+      <th>ORF</th>
+      <th>Sequence</th>
+      <th ng-if="dl.firstValue.pam != 'NNN'">PAM</th>
+      <th ng-if="dl.firstValue.pam == 'NNN'">TAM</th>
+      <th>C to T mutations</th>
+      <th>A to G mutations</th>
+      <th ng-if="dl.firstValue.pam != 'NNN' && !dl.if_CRISi">CRISPR score</th>
+      <th ng-if="dl.firstValue.pam != 'NNN' && dl.if_CRISi">CRISPRi score</th>
+<!--      <th>test</th>-->
+
+      <!--<th>0bp mismatches</th>-->
+      <!--<th>1bp mismatches</th>-->
+      <!--<th>2bp mismatches</th>-->
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="rna in dl.cart.getIds()">
+      <td>{{rna.id}}</td>
+      <td class="text-right">{{rna.start}}</td>
+      <td class="text-right">{{rna.end}}</td>
+      <td class="text-right">{{rna.strand}}</td>
+      <td>{{rna['orf']}}</td>
+      <td style="font-family:monospace" ng-if="dl.firstValue.pam != 'NNN'">{{rna.sequence}}</td>
+      <td style="font-family:monospace" ng-if="dl.firstValue.pam == 'NNN'">{{rna.tnpb_Seq}}</td>
+      <td style="font-family:monospace" ng-if="dl.firstValue.pam != 'NNN'">{{rna.pam}}</td>
+      <td style="font-family:monospace" ng-if="dl.firstValue.pam == 'NNN'">{{rna.tam}}</td>
+      <td style="font-family:monospace">{{rna.changed_aas.CtoT.join(", ")}}</td>
+      <td style="font-family:monospace">{{rna.changed_aas.AtoG.join(", ")}}</td>
+      <td ng-if="dl.firstValue.pam != 'NNN'&& !dl.if_CRISi">{{rna['Mix_Score']}}</td>
+      <td ng-if="dl.firstValue.pam != 'NNN'&& dl.if_CRISi">{{rna['CRISPRi_score']}}</td>
+<!--      <td>{{dl.firstValue.pam}}</td>-->
+
+      <!--<td>{{rna['1bpmm']}}</td>-->
+      <!--<td>{{rna['2bpmm']}}</td>-->
+    </tr>
+    </tbody>
+
+  </table>
+</div>
