@@ -1,7 +1,7 @@
 """Helper functions for the webapi"""
 
 import os
-import redis
+import valkey
 from flask import g, abort
 from crispy_models.models import Session, Queue
 
@@ -36,7 +36,7 @@ def scan(session):
 def _get_db():
     redis_store = getattr(g, '_database', None)
     if redis_store is None:
-        redis_store = redis.from_url(os.getenv('CRISPY_REDIS_URL', 'redis://localhost:6379/0'), decode_responses=True)
+        redis_store = valkey.from_url(os.getenv('CRISPY_REDIS_URL', 'redis://localhost:6379/0'), decode_responses=True)
         setattr(g, '_database', redis_store)
     return redis_store
 

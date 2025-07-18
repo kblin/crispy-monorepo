@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crispy-webapi"
+dynamic = ["version"]
+authors = [
+  { name="SecondaryMetabolites.org packaging team", email="packaging@biosustain.dtu.dk" },
+]
+description = "A REST-like web API for CRISPy"
+readme = "README.md"
+license = { text = "GNU Affero General Public License v3 or later (AGPLv3+)" }
+requires-python = ">=3"
+classifiers = [
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Development Status :: 4 - Beta',
+    'Intended Audience :: Science/Research',
+    'Topic :: Scientific/Engineering :: Bio-Informatics',
+    'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',
+    'Operating System :: OS Independent',
+]
+dependencies = [
+    "crispy-models",
+    "Flask",
+    "Jinja2",
+    "MarkupSafe",
+    "Werkzeug",
+    "itsdangerous",
+    "valkey",
+    "feedparser",
+    "gunicorn",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/secondarymetabolites/crispy-service/"
+
+[project.optional-dependencies]
+testing = [
+    "mockredispy-kblin",
+    "pytest",
+    "pytest-cov",
+    "pytest-flask",
+]
+
+[tool.setuptools]
+packages = ["crispy_webapi"]
+
+[tool.setuptools.dynamic]
+version = {attr = "crispy_webapi.version.__version__"}
