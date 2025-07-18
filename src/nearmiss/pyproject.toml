@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nearmiss"
+version = "0.1.4"
+authors = [
+    {name = "Simon Shaw", email = "packaging@secondarymetabolites.org"},
+]
+description = "Fast inexact text searching with suffix arrays"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "GPLv3+"}
+classifiers = [
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Development Status :: 3 - Alpha',
+    'Intended Audience :: Science/Research',
+    'Topic :: Scientific/Engineering :: Bio-Informatics',
+    'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+]
+dependencies = []
+
+[project.optional-dependencies]
+testing = [
+    'pytest >= 3.3.0',
+    'coverage',
+]
+
+[tool.setuptools.packages.find]
+exclude = ["tests*"]
+
+[tool.pycodestyle]
+max-line-length = 100
+
+[tool.pylint]
+max-line-length = 100
+
+[tool.mypy]
+incremental = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+ignore_missing_imports = true
+warn_unused_ignores = true
