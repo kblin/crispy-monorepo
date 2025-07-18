@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crispy-models"
+dynamic = ["version"]
+authors = [
+    {name = "Kai Blin", email = "kblin@biosustain.dtu.dk"},
+]
+description = "Shared code for CRISPy web service"
+readme = "README.md"
+license = {text = "GNU Affero General Public License v3 or later (AGPLv3+)"}
+classifiers = [
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Development Status :: 4 - Beta',
+    'Intended Audience :: Science/Research',
+    'Topic :: Scientific/Engineering :: Bio-Informatics',
+    'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',
+    'Operating System :: OS Independent',
+]
+requires-python = ">=3.8"
+
+dependencies = ["build>=1.2.2.post1"]
+
+[project.optional-dependencies]
+testing = [
+    "fakeredis",
+    "flake8",
+    "mypy",
+    "pytest",
+    "pytest-cov",
+]
+packaging = [
+    "build",
+    "twine",
+]
+
+[project.urls]
+Homepage = "https://github.com/secondarymetabolites/crispy-models/"
+
+[tool.setuptools]
+packages = ["crispy_models"]
+package-data = {"crispy_models" = ["py.typed"]}
+
+[tool.setuptools.dynamic]
+version = {attr = "crispy_models.version.__version__"}
+
+[tool.flake8]
+max-line-length = 120
