@@ -20,9 +20,6 @@ def find_position_differences(seq1, seq2):
     return differences
 
 
-
-
-
 def build_comparison_text(records: List[SeqRecord], window_size: int) -> str:
     """ Builds a single string containing forward and reverse strands of all
         record sequences, separated by a large enough section of '$' characters
@@ -47,7 +44,6 @@ def build_comparison_text(records: List[SeqRecord], window_size: int) -> str:
 def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
                 unique_size: int = 13, full_size: int = 23, threads: int = -1,
                 ) -> List[Dict[str, Union[str, int]]]:
-    # print('pam is '+ str(pam)+"====================================================================================================")
     if unique_size < 1:
         raise ValueError("unique size cannot be below 1")
     if full_size < unique_size:
@@ -70,13 +66,9 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
             '0bpmm': result[0] - 2,  # remove self-hit
         }
 
-        # print(seq_section[:-3])
         # add remaining mismatch info
         for i, val in enumerate(result[1:]):
             base['{}bpmm'.format(i+1)] = val//2
-        # print(result)
-        # print(base['1bpmm'],"=======================base")
-        # print("hey,i have updated base")
         return base
 
     # set the size of the window to the unique size
@@ -302,30 +294,19 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
         else:
             #it depend on this to find mismatch
             searcher = Searcher(str(needle.seq))
-        print("pam =  "+pam)
         if pam == "GG":
 
             results = searcher.find_repeat_counts(target=pam, before_window=before_window,
                                                   other_text=comparison_text, threads=threads)[0]
             results_seq = searcher.find_repeat_counts(target=pam, before_window=before_window,
                                                   other_text=comparison_text, threads=threads)[1]
-        # elif pam == "TTC":
-        #     results = searcher.find_repeat_counts(target=pam, before_window=Cas3_window,
-        #                                           other_text=comparison_text, threads=threads)[0]
-        #     results_seq = searcher.find_repeat_counts(target=pam, before_window=Cas3_window,
-        #                                               other_text=comparison_text, threads=threads)[1]
         else:
-            # print("pam = " + pam)
             results = searcher.find_repeat_counts(target=pam, before_window=TnpB_window,
                                                   other_text=comparison_text, threads=threads)[0]
-            # print(results)
             results_seq = searcher.find_repeat_counts(target=pam, before_window=TnpB_window,
                                                       other_text=comparison_text, threads=threads)[1]
-
-
         if pam == 'GG':
             for pam_start, result in sorted(results.items(), key=lambda x: x[1]):
-                # print(result)
                 # set the window location, accounting for strand
                 if strand == -1:
                     start = len(needle.seq) - pam_start - len(pam)
@@ -341,21 +322,12 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
                             if len(find_position_differences(sim_seq[0],other_seq)) == 1:
                                 Fal_Match_Score = eval(format((1 - score_sys[find_position_differences(sim_seq[0],other_seq)[0][1]][find_position_differences(sim_seq[0],other_seq)[0][0]]),'.2f'))
                                 Tot_Fal_Match_Score += SINGLE_OFFTARGET_SCORE[1]*Fal_Match_Score
-
-
                             elif len(find_position_differences(sim_seq[0],other_seq)) == 2:
-
                                 d = abs(find_position_differences(sim_seq[0],other_seq)[0][0] - find_position_differences(sim_seq[0],other_seq)[1][0])
                                 Fal_Match_Score = eval(format((1 - score_sys[find_position_differences(sim_seq[0],other_seq)[0][1]][find_position_differences(sim_seq[0],other_seq)[0][0]] * score_sys[find_position_differences(sim_seq[0],other_seq)[1][1]][find_position_differences(sim_seq[0],other_seq)[1][0]]* combine_eff[d]), '.2f'))
                                 Tot_Fal_Match_Score += SINGLE_OFFTARGET_SCORE[2]*Fal_Match_Score
-
-
                             else:
-
                                 continue
-
-
-
                 else:
                     start = pam_start - full_size + len(pam)
                     end = pam_start + len(pam)
@@ -369,7 +341,6 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
                         for other_seq in sim_seq[1:]:
 
                             if len(find_position_differences(sim_seq[0],other_seq)) == 1:
-                                # print(find_position_differences(sim_seq[0],other_seq))
                                 Fal_Match_Score = eval(format((
                                             1 - score_sys[find_position_differences(sim_seq[0], other_seq)[0][1]][
                                         find_position_differences(sim_seq[0], other_seq)[0][0]]), '.2f'))
@@ -377,18 +348,12 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
 
 
                             elif len(find_position_differences(sim_seq[0],other_seq)) == 2:
-                                # print(find_position_differences(sim_seq[0], other_seq))
                                 d = abs(find_position_differences(sim_seq[0], other_seq)[0][0] -
                                         find_position_differences(sim_seq[0], other_seq)[1][0])
                                 Fal_Match_Score = eval(format((1 - score_sys[find_position_differences(sim_seq[0],other_seq)[0][1]][find_position_differences(sim_seq[0],other_seq)[0][0]] * score_sys[find_position_differences(sim_seq[0],other_seq)[1][1]][find_position_differences(sim_seq[0],other_seq)[1][0]]* combine_eff[d]), '.2f'))
                                 Tot_Fal_Match_Score += SINGLE_OFFTARGET_SCORE[2]*Fal_Match_Score
-
-
                             else:
-
                                 continue
-
-
 
                 # skip anything for which the full window shown would be truncated
                 if start - 5 < 0 or end + 5 >= len(needle.seq):
@@ -398,14 +363,12 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
                 Seq = location.extract(needle.seq)
                 Seq = Seq[1:]
 
-
                 seq = Seq[4:-8]
                 PAM = Seq[-8:-5]
 
                 downstream5prim = Seq[:4]
                 downstream3prim = Seq[-5:]
                 CRISPRi_score = 0
-
 
                 # Due to CRISPRi's low tolerance to mismatch, off-target matching is temporarily excluded from CRISPRi scores.
                 # Calculate CRISPRi score here
@@ -431,7 +394,6 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
                     DOENCH_2014_score = "{:.1f}".format(DOENCH_2014_score)
                     # Mix_Score = "{:.1f}".format(Mix_Score)
                     CRISPRi_score = "{:.1f}".format(CRISPRi_score)
-                    # print(Mix_Score)
 
                     if result[0] != 2:
                         XU_2015_score = 0
@@ -440,10 +402,8 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
                     CRISPRi_score = 0
                     Mix_Score = 0
 
-
                 GC_content = calcGCContent(seq)
                 Self_complementarity = calcSelfComplementarity(seq,["AGGCTAGTCCGT"])
-
 
                 final_result.append(build_json_base(location, result, seq+PAM,GC_content,Self_complementarity,"NNNNNNNNNN",CRISPRi_score,Mix_Score))
                 idx += 1
@@ -459,25 +419,16 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
                 # skip anything for which the full window shown would be truncated
                 if start < 0 or end >= len(needle.seq):
                     continue
-                # print(strand)
 
                 location = FeatureLocation(start, end, strand)
                 seq = location.extract(needle.seq)
-                # print(str(seq)+"======================================")
                 TAM = seq[:4]
-                # print(seq)
                 GC_content = TnpB_calcGCContent(seq)
                 Self_complementarity = calcSelfComplementarity(seq, ["AGGCTAGTCCGT"])
                 final_result.append(build_json_base(location, result, "NNNNN",GC_content,Self_complementarity,TnpB_seq=seq))
                 idx += 1
 
     # order by lowest hits, then by start position
-    print("type===========================================================",final_result[:10])
     final_result.sort(key=lambda x: (x["all_hits"], x["start"]))
-
-    # for i in final_result:
-    #     print(i["score"])
-
-
 
     return final_result

@@ -41,29 +41,19 @@ def main():  # noqa: C901  # no, flake8, it's not too complex
     UPLOAD_PATH = path.abspath(args.upload_dir)
 
     db = redis.Redis.from_url(args.queue, decode_responses=True)
-    # # 查看所有键
-    # keys = db.keys('*')  # 使用 * 获取所有键
-    # print("All keys in the database:")
-    # for key in keys:
-    #     print(key)
 
     queue = Queue(db, 'prepare')
-    print(queue._key)
 
     while True:
         job_key = queue.next()
-        print(job_key)
 
         if job_key is None:
             time.sleep(1)
-            print('None')
             continue
 
         logging.info('processing {}'.format(job_key))
         job_id = int(job_key.split(':')[-1])
         job = Session(db, session_id=job_id)
-        print(str(job.if_tnpb)+'=============================')
-        # print("PESeq = "+str(job.PESeq))
         dirname = path.join(UPLOAD_PATH, str(job_id))
         #search
         if job.asid:

@@ -34,7 +34,6 @@ def main():  # noqa: C901  # no, flake8, it's not too complex
         logging.basicConfig(format='%(levelname)s %(asctime)s: %(message)s', level=logging.INFO)
 
     UPLOAD_PATH = path.abspath(args.upload_dir)
-    # print(UPLOAD_PATH)
 
     db = redis.Redis.from_url(args.queue, decode_responses=True)
     queue = Queue(db, 'scan')
@@ -42,21 +41,16 @@ def main():  # noqa: C901  # no, flake8, it's not too complex
         job_key = queue.next()
 
         if job_key is None:
-            print(None)
             time.sleep(1)
             continue
-        else:
-            print("success")
 
         logging.info('processing {}'.format(job_key))
         job_id = int(job_key.split(':')[-1])
         job = Session(db, session_id=job_id)
-        # print(str(job.if_tnpb)+'==========================================================================================')
         if job.if_tnpb:
             job.pam = "TTGAT"
         elif not job.if_tnpb:
             job.pam = "GG"
-        # print("job.pam===================================================",job.pam)
         dirname = path.join(UPLOAD_PATH, str(job_id))
 
 
