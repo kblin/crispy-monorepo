@@ -127,7 +127,6 @@ class Searcher(_Tree):
         hits = super().find_repeat_counts(anchors, target, max_distance,
                                           before_window[0], before_window[1],
                                           other_text, threads)
-        print(type(hits))
         res = []
         seq = []
         for i in hits:

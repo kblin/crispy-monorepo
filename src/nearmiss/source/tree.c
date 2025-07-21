@@ -270,12 +270,8 @@ find_mismatches(Tree const* tree, PyObject *anchors, char *anchorText, int maxDi
         query = strndup(sequence + (anchorStart + downstreamStart), downstreamEnd - downstreamStart);
         query_full = strndup(sequence + (anchorStart),25);
 
-//        printf("The original query is :%s\n",query);
-//        printf("###%s\n");
-//        printf("The full 23bp seq is :%s\n",query_full);
         find_inexact(other, anchorStart, downstreamStart, downstreamEnd, maxDistance, 0, counts, query, 0, anchorText);
         find_inexact_seq(other, anchorStart, downstreamStart, downstreamEnd, maxDistance, 0, counts, query, 0, anchorText,seq);
-//        printf("the final seq is:%s\n",charls[i]);
         free(query_full);
         free(query);
     }
@@ -298,12 +294,8 @@ find_mismatches(Tree const* tree, PyObject *anchors, char *anchorText, int maxDi
             the first being the anchor object
             the second being the list of hit counts
         */
-//        printf("one loop start\n");
         PyList_Append(list, Py_BuildValue("NNN", PyList_GetItem(anchors, i), anchorResult, PyUnicode_FromString(seq)));
-//        printf("one loop end\n");
     }
-    printf("the end");
-    // 释放内存
     int h1 = 0;
     for (h1 = 0; h1 < anchorCount; h1++) {
     free(charls[h1]);
