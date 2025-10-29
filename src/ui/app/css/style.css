@@ -7,8 +7,17 @@ body {
     margin-bottom: 160px;
 }
 
+.page-content {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 350px);
+}
+
+.main-content {
+    flex: 1;
+}
+
 .news {
-    position: absolute;
     bottom: 160px;
     width: 100%;
 }
