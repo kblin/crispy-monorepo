@@ -5,7 +5,10 @@ import json
 import random
 from typing import Any, Dict, Optional, Union
 
-from redis import Redis
+try:
+    from redis import Redis
+except ImportError:
+    from valkey import Valkey as Redis
 
 class Session(object):
     """A CRISPy web session object"""
