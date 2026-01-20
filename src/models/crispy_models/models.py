@@ -247,7 +247,8 @@ class Session(object):
     @property
     def if_tnpb(self) -> bool:
         ret = self._db.hget(self._session_key, 'if_tnpb')
-        assert ret
+        if not ret:
+            return False
         return json.loads(ret)
 
     @if_tnpb.setter
