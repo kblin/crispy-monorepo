@@ -90,7 +90,12 @@ def main():  # noqa: C901  # no, flake8, it's not too complex
             elif job.filename.endswith('.json'):
                 with open(full_path, 'r') as handle:
                     as_json = json.load(handle)
-                json_rec = convert_json(as_json)
+                try:
+                    json_rec = convert_json(as_json)
+                except KeyError:
+                    job.state = "error"
+                    job.error = "Invalid input file"
+                    continue
                 gbk_record = json_to_gbk(as_json)
                 job.filename = 'input.gbk'
                 SeqIO.write([gbk_record], path.join(dirname, job.filename), 'genbank')
