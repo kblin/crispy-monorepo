@@ -38,9 +38,14 @@ body {
 .footer {
     position: absolute;
     bottom: 0;
+    left: 0;
+    max-height: 10em;
     width: 100%;
-    heigth: 160px;
     background-color: #303030;
+}
+
+.footer-content {
+    margin-top: 1em;
 }
 
 .footer-text {

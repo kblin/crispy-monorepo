@@ -91,41 +91,51 @@
         </th>
         <th ng-if="output.crisprimode == 'Hyper'" style="width: 200px;">5'UTR</th>
         <th ng-if="output.if_tnpb">TAM</th>
-        <th ng-if="!output.if_tnpb">Sequence</th>
-        <th ng-if="output.if_tnpb">Sequence</th>
+        <th>Sequence</th>
         <th ng-if="!output.if_tnpb">PAM</th>
 
         <th ng-if="output.best">Mutations</th>
 <!--        <th>0 bp</th>-->
-        <th ng-if="!output.if_tnpb">1 bp<img src="images/trangle.svg" width="18" height="18" ng-click="output.sortby1bp = true;output.sortbyscore = false;output.sortby0bp = false;output.sortby2bp = false;updateGrnas()"/><br></th>
-        <th ng-if="!output.if_tnpb">2 bp<img src="images/trangle.svg" width="18" height="18" ng-click="output.sortby1bp = false;output.sortbyscore = false;output.sortby0bp = false;output.sortby2bp = true;updateGrnas()"/><br></th>
-        <th ng-if="!output.if_tnpb">Exact match<img src="images/trangle.svg" width="18" height="18" ng-click="output.sortby1bp = false;output.sortbyscore = false;output.sortby0bp = true;output.sortby2bp = false;updateGrnas()"/><br></th>
+	<th ng-if="!output.if_tnpb" ng-click="output.sortby1bp = true; output.sortbyscore = false; output.sortby0bp = false; output.sortby2bp = false; updateGrnas()">1 bp
+		<i class="fa" ng-class="{'fa-chevron-down': output.sortby1bp }"/>
+	</th>
+        <th ng-if="!output.if_tnpb" ng-click="output.sortby1bp = false; output.sortbyscore = false; output.sortby0bp = false; output.sortby2bp = true; updateGrnas()">2 bp
+		<i class="fa" ng-class="{'fa-chevron-down': output.sortby2bp }"/>
+	</th>
+        <th ng-if="!output.if_tnpb" ng-click="output.sortby1bp = false; output.sortbyscore = false; output.sortby0bp = true; output.sortby2bp = false; updateGrnas()">Exact match
+		<i class="fa" ng-class="{'fa-chevron-down': output.sortby0bp }"/>
+	</th>
 
 
-        <th ng-if="output.if_tnpb">1 bp<img src="images/trangle.svg" width="18" height="18" ng-click="output.sortbyTnpB1bp = true;output.sortbyTnpB0bp = false;output.sortbyTnpB2bp = false;updateGrnas()"/><br></th>
-        <th ng-if="output.if_tnpb">2 bp<img src="images/trangle.svg" width="18" height="18" ng-click="output.sortbyTnpB1bp = false;output.sortbyTnpB0bp = false;output.sortbyTnpB2bp = true;updateGrnas()"/><br></th>
-        <th ng-if="output.if_tnpb">Exact match<img src="images/trangle.svg" width="18" height="18" ng-click="output.sortbyTnpB1bp = false;output.sortbyTnpB0bp = true;output.sortbyTnpB2bp = false;updateGrnas()"/><br></th>
+        <th ng-if="output.if_tnpb" ng-click="output.sortbyTnpB1bp = true; output.sortbyTnpB0bp = false; output.sortbyTnpB2bp = false; updateGrnas()">1 bp
+		<i class="fa" ng-class="{'fa-chevron-down': output.sortbyTnpB1bp }"/>
+	</th>
+        <th ng-if="output.if_tnpb" ng-click="output.sortbyTnpB1bp = false; output.sortbyTnpB0bp = false; output.sortbyTnpB2bp = true; updateGrnas()">2 bp
+		<i class="fa" ng-class="{'fa-chevron-down': output.sortbyTnpB2bp }"/>
+	</th>
+        <th ng-if="output.if_tnpb" ng-click="output.sortbyTnpB1bp = false; output.sortbyTnpB0bp = true; output.sortbyTnpB2bp = false; updateGrnas()">Exact match
+		<i class="fa" ng-class="{'fa-chevron-down': output.sortbyTnpB0bp }"/>
+	</th>
 
 
-<th ng-if="!output.crisi && !output.if_tnpb" style="width: 150px">
+<th ng-if="!output.crisi && !output.if_tnpb" style="width: 150px"
+    ng-click="output.sortby1bp = false; output.sortbyscore = true; output.sortby0bp = false; output.sortby2bp = false; updateGrnas()">
     <div class="score-header" style="display: flex; align-items: center; gap: 8px;">
         <span class="score-text">Score</span>
         <a href="Score_rule.html" target="_blank" class="superscript-link">
-            <img src="images/i.svg" width="14" height="14" class="superscript-icon"/>
+            <i class="fa fa-info-circle"/>
         </a>
-        <img src="images/trangle.svg" width="18" height="18" 
-             ng-click="output.sortby1bp = false;output.sortbyscore = true;output.sortby0bp = false;output.sortby2bp = false;updateGrnas()"/>
+	<i class="fa" ng-class="{'fa-chevron-down': output.sortbyscore }"/>
     </div>
 </th>
-<th ng-if="output.crisi && !output.if_tnpb" style="min-width: 150px">
+<th ng-if="output.crisi && !output.if_tnpb" style="min-width: 150px"
+    ng-click="output.firsttime = false; output.sortby1bp = false; output.sortbyscore = true; output.sortby0bp = false; output.sortby2bp = false; updateGrnas()">
     <div class="score-header" style="display: flex; align-items: center; gap: 8px;">
         <span class="score-text">Score</span>
         <a href="Score_rule.html" target="_blank" class="superscript-link">
-            <img src="images/i.svg" width="14" height="14" class="superscript-icon"/>
+            <i class="fa fa-info-circle"/>
         </a>
-        <img src="images/trangle.svg" width="18" height="18" 
-             ng-click="output.firsttime = false; output.sortby1bp = false; output.sortbyscore = true; output.sortby0bp = false; output.sortby2bp = false; updateGrnas()"
-             style="cursor: pointer;"/>
+	<i class="fa" ng-class="{'fa-chevron-down': output.sortbyscore }"/>
     </div>
 </th>
 
