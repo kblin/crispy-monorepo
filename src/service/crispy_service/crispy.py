@@ -316,11 +316,11 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
                         Tot_Fal_Match_Score = 0
                         for other_seq in sim_seq[1:]:
                             if len(find_position_differences(sim_seq[0],other_seq)) == 1:
-                                Fal_Match_Score = eval(format((1 - score_sys[find_position_differences(sim_seq[0],other_seq)[0][1]][find_position_differences(sim_seq[0],other_seq)[0][0]]),'.2f'))
+                                Fal_Match_Score = round((1 - score_sys[find_position_differences(sim_seq[0],other_seq)[0][1]][find_position_differences(sim_seq[0],other_seq)[0][0]]),2)
                                 Tot_Fal_Match_Score += SINGLE_OFFTARGET_SCORE[1]*Fal_Match_Score
                             elif len(find_position_differences(sim_seq[0],other_seq)) == 2:
-                                d = abs(find_position_differences(sim_seq[0],other_seq)[0][0] - find_position_differences(sim_seq[0],other_seq)[1][0])
-                                Fal_Match_Score = eval(format((1 - score_sys[find_position_differences(sim_seq[0],other_seq)[0][1]][find_position_differences(sim_seq[0],other_seq)[0][0]] * score_sys[find_position_differences(sim_seq[0],other_seq)[1][1]][find_position_differences(sim_seq[0],other_seq)[1][0]]* combine_eff[d]), '.2f'))
+                                d = abs(find_position_differences(sim_seq[0], other_seq)[0][0] - find_position_differences(sim_seq[0], other_seq)[1][0])
+                                Fal_Match_Score = round((1 - score_sys[find_position_differences(sim_seq[0],other_seq)[0][1]][find_position_differences(sim_seq[0],other_seq)[0][0]] * score_sys[find_position_differences(sim_seq[0],other_seq)[1][1]][find_position_differences(sim_seq[0],other_seq)[1][0]]* combine_eff[d]), 2)
                                 Tot_Fal_Match_Score += SINGLE_OFFTARGET_SCORE[2]*Fal_Match_Score
                             else:
                                 continue
@@ -337,16 +337,15 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
                         for other_seq in sim_seq[1:]:
 
                             if len(find_position_differences(sim_seq[0],other_seq)) == 1:
-                                Fal_Match_Score = eval(format((
-                                            1 - score_sys[find_position_differences(sim_seq[0], other_seq)[0][1]][
-                                        find_position_differences(sim_seq[0], other_seq)[0][0]]), '.2f'))
+                                Fal_Match_Score = round((1 - score_sys[find_position_differences(sim_seq[0], other_seq)[0][1]][
+                                        find_position_differences(sim_seq[0], other_seq)[0][0]]), 2)
                                 Tot_Fal_Match_Score += SINGLE_OFFTARGET_SCORE[1]*Fal_Match_Score
 
 
                             elif len(find_position_differences(sim_seq[0],other_seq)) == 2:
                                 d = abs(find_position_differences(sim_seq[0], other_seq)[0][0] -
                                         find_position_differences(sim_seq[0], other_seq)[1][0])
-                                Fal_Match_Score = eval(format((1 - score_sys[find_position_differences(sim_seq[0],other_seq)[0][1]][find_position_differences(sim_seq[0],other_seq)[0][0]] * score_sys[find_position_differences(sim_seq[0],other_seq)[1][1]][find_position_differences(sim_seq[0],other_seq)[1][0]]* combine_eff[d]), '.2f'))
+                                Fal_Match_Score = round((1 - score_sys[find_position_differences(sim_seq[0],other_seq)[0][1]][find_position_differences(sim_seq[0],other_seq)[0][0]] * score_sys[find_position_differences(sim_seq[0],other_seq)[1][1]][find_position_differences(sim_seq[0],other_seq)[1][0]]* combine_eff[d]), 2)
                                 Tot_Fal_Match_Score += SINGLE_OFFTARGET_SCORE[2]*Fal_Match_Score
                             else:
                                 continue
