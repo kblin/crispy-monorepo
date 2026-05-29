@@ -49,7 +49,15 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
     if full_size < unique_size:
         raise ValueError("full size cannot be below unique size")
 #get how many base
-    def build_json_base(location, result,seq_section,GC_content,Self_complementarity, TnpB_seq = "NNNNNNNNNN",CRISPRi_score = 0,Mix_Score = 0) -> Dict[str, Union[str, int]]:
+    def build_json_base(
+            location, result,
+            seq_section,
+            GC_content,
+            Self_complementarity,
+            TnpB_seq = "NNNNNNNNNN",
+            CRISPRi_score = 0.,
+            Mix_Score = 0.
+    ) -> dict[str, str | int]:
         base = {
             'start': location.start + 5,
             'end': location.end - 5,
