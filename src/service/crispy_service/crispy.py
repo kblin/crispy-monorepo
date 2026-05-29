@@ -390,13 +390,13 @@ def crispy_scan(haystack: List[SeqRecord], needle: SeqRecord, pam: str = "GG",
                     DOENCH_2014_score = scoregRNA(downstream5prim+seq, PAM, downstream3prim, DOENCH_2014,Tot_Fal_Match_Score)
                     XU_2015_score = round(XU_2015_score*100, 1)
                     DOENCH_2014_score = round(DOENCH_2014_score * 100, 1)
-                    Mix_Score = "{:.1f}".format((XU_2015_score + DOENCH_2014_score)/2)
+                    Mix_Score = round((XU_2015_score + DOENCH_2014_score)/2, 1)
                     CRISPRi_score = round(CRISPRi_score * 100, 1)
                     # 格式化显示一位小数
-                    XU_2015_score = "{:.1f}".format(XU_2015_score)
-                    DOENCH_2014_score = "{:.1f}".format(DOENCH_2014_score)
+                    XU_2015_score = round(XU_2015_score, 1)
+                    DOENCH_2014_score = round(DOENCH_2014_score, 1)
                     # Mix_Score = "{:.1f}".format(Mix_Score)
-                    CRISPRi_score = "{:.1f}".format(CRISPRi_score)
+                    CRISPRi_score = round(CRISPRi_score, 1)
 
                     if result[0] != 2:
                         XU_2015_score = 0
