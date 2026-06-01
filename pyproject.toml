@@ -1,17 +1,41 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "crispy3"
 version = "3.0.0"
 description = "A monorepo containing all of the CRISPy-web packages"
 authors = [{ name = "Kai Blin", email = "kblin@dtu.dk" }]
-dependencies = ["setuptools>=80.9.0", "build>=1.2.2.post1", "biopython>=1.85", "valkey>=6.1.0", "requests>=2.32.4", "feedparser>=6.0.11", "flask>=3.1.1", "gunicorn>=23.0.0", "flask-cors>=6.0.1"]
-requires-python = ">=3.11"
 readme = "README.md"
 license = { text = "AGPL" }
+requires-python = ">=3.11"
+dependencies = [
+    "crispy-models[testing]",
+    "crispy-service[testing]",
+    "crispy-webapi[testing]",
+    "nearmiss[testing]",
+    "fakeredis",
+    "pytest",
+    "pytest-cov",
+]
 
-[build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
+[tool.uv]
+package = false
 
+[tool.uv.workspace]
+members = [
+    "src/api",
+    "src/models",
+    "src/nearmiss",
+    "src/service",
+]
+
+[tool.uv.sources]
+crispy-models = { workspace = true }
+crispy-service = { workspace = true }
+crispy-webapi = { workspace = true }
+nearmiss = { workspace = true }
 
 [tool.pdm]
 distribution = true
