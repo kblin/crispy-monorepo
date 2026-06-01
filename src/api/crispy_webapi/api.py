@@ -23,7 +23,7 @@ def get_version():
     ret = {
         'webapi': api_version,
         'lib': cylib_version,
-        'gitrev': subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).strip(),
+        'gitrev': subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).strip().decode(encoding="utf-8"),
     }
 
     return jsonify(ret)
