@@ -24,6 +24,7 @@ classifiers = [
 dependencies = [
     "crispy-models",
     "Flask",
+    "flask-cors",
     "Jinja2",
     "MarkupSafe",
     "Werkzeug",
@@ -38,7 +39,7 @@ dependencies = [
 
 [project.optional-dependencies]
 testing = [
-    "mockredispy-kblin",
+    "fakeredis",
     "pytest",
     "pytest-cov",
     "pytest-flask",
@@ -46,6 +47,9 @@ testing = [
 
 [tool.setuptools]
 packages = ["crispy_webapi"]
+
+[tool.uv.sources]
+crispy-models = { workspace = true }
 
 [tool.setuptools.dynamic]
 version = {attr = "crispy_webapi.version.__version__"}

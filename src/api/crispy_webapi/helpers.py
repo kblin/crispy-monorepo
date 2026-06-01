@@ -34,9 +34,10 @@ def scan(session):
 
 
 def _get_db():
-    redis_store = getattr(g, '_database', None)
-    if redis_store is None:
-        redis_store = valkey.from_url(os.getenv('CRISPY_REDIS_URL', 'redis://localhost:6379/0'), decode_responses=True)
-        setattr(g, '_database', redis_store)
-    return redis_store
+    valkey_store = getattr(g, '_database', None)
+    if valkey_store is None:
+        url = os.getenv('CRISPY_VALKEY_URL', os.getenv('CRISPY_REDIS_URL', 'redis://localhost:6379/0'))
+        valkey_store = valkey.from_url(url, decode_responses=True)
+        setattr(g, '_database', valkey_store)
+    return valkey_store
 

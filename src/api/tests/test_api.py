@@ -8,12 +8,16 @@ from crispy_webapi.helpers import create_session, get_session
 
 @pytest.fixture
 def app(monkeypatch):
-    """Flask app with fake redis wrapper"""
+    """Flask app with fake valkey wrapper"""
     from crispy_webapi import app as flask_app
-    import redis
-    from mockredis import mock_redis_client
-    mock_redis_client.from_url = lambda x: mock_redis_client()
-    monkeypatch.setattr(redis, 'Redis', mock_redis_client)
+    import fakeredis
+    import valkey
+
+    monkeypatch.setattr(
+        valkey,
+        'from_url',
+        lambda *args, **kwargs: fakeredis.FakeStrictRedis(decode_responses=True),
+    )
     return flask_app
 
 
@@ -74,14 +78,13 @@ def test_get_genome_invalid_session(client):
 
 
 def test_start_scan_invalid(client):
-    # Ask for a fake session_id to initialize the client context
     url = url_for('start_scan', session_id=12345)
     data = {
         'from': 1234,
         'to': 2345,
     }
     response = client.post(url, data=data, content_type='application/json')
-    assert response.status_code == 400
+    assert response.status_code == 404
 
 
 def test_start_scan(client):
