@@ -21,6 +21,9 @@ classifiers = [
     'Operating System :: OS Independent',
 ]
 requires-python = ">=3.11"
+dependencies = [
+    "valkey",
+]
 
 [project.optional-dependencies]
 testing = [

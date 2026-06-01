@@ -5,14 +5,11 @@ import json
 import random
 from typing import Any, Dict, Optional, Union
 
-try:
-    from redis import Redis
-except ImportError:
-    from valkey import Valkey as Redis
+from valkey import Valkey
 
 class Session(object):
     """A CRISPy web session object"""
-    def __init__(self, db: Redis, from_id: Optional[str] = None, from_file: Optional[str] = None,
+    def __init__(self, db: Valkey, from_id: Optional[str] = None, from_file: Optional[str] = None,
                  session_id: Optional[int] = None):
         self._db = db
         self._timefmt = '%Y-%m-%d %H:%M:%S'
@@ -261,7 +258,7 @@ class Session(object):
 class Queue(object):
     """A queue for CRISPy-related jobs"""
 
-    def __init__(self, db: Redis, jobtype: str):
+    def __init__(self, db: Valkey, jobtype: str):
         """Initialize a job queue"""
         self._db = db
         self.jobtype = jobtype
